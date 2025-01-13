@@ -1,0 +1,37 @@
+
+/*////
+Table of Contents
+1. Global Styles
+2. Typography
+3. Areas
+  3.1. -
+/////*/
+
+/*-------------1. Global Styles-------------*/
+
+
+/*-------------2. Typography-------------*/
+
+
+p, h1, li, a, button {
+  color: var(--text-color);
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+a  {
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:visited {
+  color: var(--text-color);
+}
+
+/*-------------3. Areas-------------*/

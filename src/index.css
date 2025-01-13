@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+/*
+1. kleurvariabelen
+2. typografie
+3. CSS-reset
+*/
+
+/*1. kleurvariabelen*/
+:root {
+  --main-bg-color:
+          hsl(258 32 16);
+  --second-bg-color:
+          hsl(330 13 0);
+  --primary-color:
+          hsl(206 71 52);
+  --light-primary-color:
+          hsl(206 71 30);
+  --secondary-color:
+          hsl(267 62 38);
+  --accent-color:
+          hsl(315 66 44);
+  --text-color:
+          hsl(210 13 94);
+}
+
+/*2. typografie*/
+ html {
+   font-size: 14px;
+ }
+
+@media screen and (min-width: 768px){
+  html {
+    font-size: 16px;
+  }
+}
+@media screen and (min-width: 1200px){
+  html {
+    font-size: 18px;
+  }
+}
+
+body {
+  font-family: Roboto, sans-serif;
+  background: var(--main-bg-color);
+}
+
+/*3. CSS-reset*/
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}

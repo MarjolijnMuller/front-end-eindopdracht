@@ -1,0 +1,39 @@
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 3rem;
+    background: var(--second-bg-color);
+    align-items: center;
+    z-index: 0;
+}
+
+.navList {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.navItem {
+    list-style: none;
+    padding-left: 1.5rem;
+}
+
+.navItem+.navItem {
+    margin-left: 1rem;
+}
+
+/*----links*/
+
+.default-link {
+    border-bottom: 2px solid transparent;
+}
+
+.active-link {
+    border-bottom: 2px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+a:hover{
+    color: var(--primary-color);
+}

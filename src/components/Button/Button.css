@@ -1,0 +1,37 @@
+/*-----inlog button*/
+.logInNavigation {
+    margin-right: 1rem;
+    width: 8rem;
+    height: 2.5rem;
+    background: var(--accent-color);
+    font-size: 1rem;
+    border-radius: 12px;
+    font-weight: bold;
+    border: none;
+}
+
+.logInNavigation:hover {
+    background: var(--text-color);
+    color: var(--accent-color);
+}
+
+.signInHome {
+    width: 12rem;
+    height: 3rem;
+    background: var(--primary-color);
+    font-size: 1.25rem;
+    border-radius: 12px;
+    box-shadow: 5px 5px 7px var(--light-primary-color);
+    font-weight: bold;
+    border: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 20;
+}
+
+.signInHome:hover {
+    background: var(--text-color);
+    color: var(--primary-color);
+    box-shadow: inset 2px 2px 10px var(--light-primary-color);
+}
