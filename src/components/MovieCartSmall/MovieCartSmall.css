@@ -1,0 +1,19 @@
+.movieCartSmall {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 10rem;
+    height: 15rem;
+    background-color: var(--main-bg-color);
+    padding: 0.5rem;
+}
+
+.wrapperMovieCartSmall {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0.5rem;
+    align-items: center;
+}
+

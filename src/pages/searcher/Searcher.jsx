@@ -7,8 +7,8 @@ import {useEffect, useState} from "react";
 import Button from "../../components/Button/Button.jsx";
 import InnerContainer from "../../components/InnerContainer/InnerContainer.jsx";
 import ToggleSwitch from "../../components/ToggleSwitch/ToggleSwitch.jsx";
-import viewMovieCartLarge from "../../assets/viewMovieCartLarge.svg";
-import viewMovieCartSmall from "../../assets/viewMovieCartSmall.svg";
+import MovieCartSmall from "../../components/MovieCartSmall/MovieCartSmall.jsx";
+import MovieCartLarge from "../../components/MovieCartLarge/MovieCartLarge.jsx";
 
 function Searcher() {
     const [dutchServices, setDutchServices] = useState([]);
@@ -90,7 +90,7 @@ function Searcher() {
                 <h2>Genres</h2>
                 <InnerContainer>
                     <ul className="allGenreButtons">
-                    {genres.map((genre) => {
+                        {genres.map((genre) => {
                             return (
                                 <>
                                     <Button key={genre.id}
@@ -112,9 +112,26 @@ function Searcher() {
 
             <OuterContainer>
                 <ToggleSwitch
-                className={"toggleSwitchView"}/>
+                    className={"toggleSwitchView"}/>
                 <InnerContainer>
+                    <MovieCartSmall/>
+                    <MovieCartSmall/>
+                    <MovieCartSmall/>
+                    <MovieCartSmall/>
+                    <MovieCartSmall/>
+                    <MovieCartSmall/>
+                </InnerContainer>
+                <InnerContainer>
+                    <MovieCartLarge/>
+                    <MovieCartLarge/>
+                    <MovieCartLarge/>
+                    <MovieCartLarge/>
+                    <MovieCartLarge/>
 
+                </InnerContainer>
+                <InnerContainer>
+                    <p>Vorige</p>
+                    <p>Volgende</p>
                 </InnerContainer>
             </OuterContainer>
         </>

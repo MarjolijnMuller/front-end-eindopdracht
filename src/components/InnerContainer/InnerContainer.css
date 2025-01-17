@@ -3,5 +3,6 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
-    padding-top: 0.25rem
+    padding-top: 0.25rem;
+    gap: 1rem;
 }
