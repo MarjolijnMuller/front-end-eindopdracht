@@ -8,46 +8,42 @@
 
 /*1. kleurvariabelen*/
 :root {
-  --main-bg-color:
-          hsl(258 32 16);
-  --second-bg-color:
-          hsl(330 13 0);
-  --primary-color:
-          hsl(206 71 52);
-  --light-primary-color:
-          hsl(206 71 30);
-  --secondary-color:
-          hsl(267 62 38);
-  --accent-color:
-          hsl(315 66 44);
-  --text-color:
-          hsl(210 13 94);
+    --main-bg-color: hsl(258 32 16);
+    --second-bg-color: hsl(330 13 0);
+    --primary-color: hsl(206 71 52);
+    --light-primary-color: hsl(206 71 80);
+    --dark-primary-color: hsl(206 71 20);
+    --secondary-color: hsl(267 62 38);
+    --light-secondary-color: hsl(267 62 70);
+    --accent-color: hsl(315 66 44);
+    --text-color: hsl(210 13 94);
 }
 
 /*2. typografie*/
- html {
-   font-size: 14px;
- }
-
-@media screen and (min-width: 768px){
-  html {
-    font-size: 16px;
-  }
+html {
+    font-size: 14px;
 }
-@media screen and (min-width: 1200px){
-  html {
-    font-size: 18px;
-  }
+
+@media screen and (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    html {
+        font-size: 18px;
+    }
 }
 
 body {
-  font-family: Roboto, sans-serif;
-  background: var(--main-bg-color);
+    font-family: Roboto, sans-serif;
+    background: var(--main-bg-color);
 }
 
 /*3. CSS-reset*/
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }

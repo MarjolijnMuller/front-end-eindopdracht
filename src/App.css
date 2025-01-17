@@ -13,7 +13,7 @@ Table of Contents
 /*-------------2. Typography-------------*/
 
 
-p, h1, li, a, button {
+body, button {
   color: var(--text-color);
 }
 
