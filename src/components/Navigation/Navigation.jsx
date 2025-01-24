@@ -1,48 +1,52 @@
 import React from 'react';
 import './Navigation.css';
-import {NavLink, useNavigate} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import Button from "../Button/Button.jsx";
+import {House, MagnifyingGlass, Star, UserCircle} from "@phosphor-icons/react";
 
-function Navigation() {
-    const navigate = useNavigate();
-
-    function navigation(){
-        navigate('/inloggen');
-    }
+function Navigation(props) {
 
     return (
         <>
             <nav>
                 <ul className="navList">
                     <li className="navItem">
-                        <NavLink className={({isActive}) => isActive===true? 'active-link' : 'default-link'}
+                        <NavLink className={({isActive}) => isActive === true ? 'active-link' : 'default-link'}
                                  to="/">
+                            <House size={20}/>
                             Home
                         </NavLink>
                     </li>
-                    <li className="navItem">
-                        <NavLink className={({isActive}) => isActive===true? 'active-link' : 'default-link'}
-                                 to="/search">
-                            Zoeken
-                        </NavLink>
-                    </li>
-                    <li className="navItem">
-                        <NavLink className={({isActive}) => isActive===true? 'active-link' : 'default-link'}
-                                 to="/favorite">
-                            Mijn favorieten
-                        </NavLink>
-                    </li>
-                    <li className="navItem">
-                        <NavLink className={({isActive}) => isActive===true? 'active-link' : 'default-link'}
-                                 to="/account">
-                            Account</NavLink>
-                    </li>
+                    {!props.disabled &&
+                        <>
+                            <li className="navItem">
+                                <NavLink className={({isActive}) => isActive === true ? 'active-link' : 'default-link'}
+                                         to="/search">
+                                    <MagnifyingGlass size={20}/>
+                                    Zoeken
+                                </NavLink>
+                            </li>
+                            <li className="navItem">
+                                <NavLink className={({isActive}) => isActive === true ? 'active-link' : 'default-link'}
+                                         to="/favorite">
+                                    <Star size={20}/>
+                                    Mijn favorieten
+                                </NavLink>
+                            </li>
+                            <li className="navItem">
+                                <NavLink className={({isActive}) => isActive === true ? 'active-link' : 'default-link'}
+                                         to="/account">
+                                    <UserCircle size={20}/>
+                                    Account</NavLink>
+                            </li>
+                        </>}
                 </ul>
                 <Button
                     type={"button"}
                     name={"Inloggen"}
-                    className={"logInNavigation"}
-                    onClick={Navigation} />
+                    className={'logInNavigation'}
+                    onClick={Navigation}
+                    disabled={false}/>
             </nav>
         </>
     )

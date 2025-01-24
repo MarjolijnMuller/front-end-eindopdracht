@@ -6,3 +6,12 @@
     padding-top: 0.25rem;
     gap: 1rem;
 }
+
+.inner-container-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-self: center;
+    gap: 2rem;
+    width: 60rem;
+}

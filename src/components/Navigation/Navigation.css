@@ -27,13 +27,33 @@ nav {
 
 .default-link {
     border-bottom: 2px solid transparent;
+    align-items: baseline;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
 }
 
 .active-link {
     border-bottom: 2px solid var(--primary-color);
     color: var(--primary-color);
+    align-items: baseline;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
 }
 
 a:hover{
     color: var(--primary-color);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
 }

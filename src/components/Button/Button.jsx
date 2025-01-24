@@ -27,6 +27,7 @@ function Button(props) {
             type={props.type}
             className={props.className}
             onClick={handleClick}
+            disabled={props.disabled}
         >
             {props.name}
         </button>

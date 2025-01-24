@@ -2,8 +2,13 @@ import React from 'react';
 import './InnerContainer.css'
 
 function InnerContainer(props) {
+    let className = 'inner-container';
+
+    if (props.classNameAdd) {
+        className += '-' + props.classNameAdd;
+    }
     return (
-        <div className="inner-container">
+        <div className={className}>
             {props.children}
         </div>
     )

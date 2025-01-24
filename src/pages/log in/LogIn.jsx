@@ -3,11 +3,13 @@ import TitleContainer from "../../components/TitleContainer/TitleContainer.jsx";
 import OuterContainer from "../../components/OuterContainer/OuterContainer.jsx";
 import Button from "../../components/Button/Button.jsx";
 import {useState} from "react";
+import Navigation from "../../components/Navigation/Navigation.jsx";
+import InnerContainer from "../../components/InnerContainer/InnerContainer.jsx";
 
 
 function logIn() {
     const [formState, setFormState] = useState({
-        email: "",
+        username: "",
         password: "",
     })
     const [errorMessage, setErrorMessage] = useState("");
@@ -23,8 +25,8 @@ function logIn() {
     }
 
 
-    async function onFormSubmit(e) {
-        e.preventDefault();
+    const handleSubmit = async (event) => {
+        event.preventDefault();
         setErrorMessage("");
         toggleSuccess(true);
         try {
@@ -46,40 +48,43 @@ function logIn() {
 
     return (
         <>
+            <Navigation disabled={true}/>
             <TitleContainer title="Inloggen"/>
 
 
             <OuterContainer>
-                {!success ?
-                    <form>
-                        <label htmlFor="inlog-mail">
-                            E-mailadres:
-                            <input
-                                type="text"
-                                name="email"
-                                onChange={handleChange}
+                <InnerContainer classNameAdd="center">
+                    {!success ?
+                        <form onSubmit={handleSubmit}>
+                            <label htmlFor="inlog-username" className="logIn">
+                                Gebruikersnaam:
+                                <input
+                                    type="text"
+                                    name="username"
+                                    onChange={handleChange}
+                                    className="logInInput"
+                                />
+                            </label>
+                            <label htmlFor="inlog-password" className="logIn">
+                                Wachtwoord:
+                                <input
+                                    type="password"
+                                    name="password"
+                                    onChange={handleChange}
+                                    className="logInInput"
+                                />
+                            </label>
+                            <Button
+                                type={"submit"}
+                                name={"Inloggen"}
+                                className={"SubmitButton"}
                             />
-                        </label>
-                        <label htmlFor="inlog-password">
-                            Wachtwoord:
-                            <input
-                                type="password"
-                                name="password"
-                                onChange={handleChange}
-                            />
-                        </label>
-                        <Button
-                            type={"submit"}
-                            name={"Inloggen"}
-                            className={"inloggen"}
-                            onClick={onFormSubmit()}
-
-                        />
-                    </form> : <p>U bent ingelogd</p>}
-                    </OuterContainer>
-                    </>
-                    )
-                }
+                        </form> : <p>U bent ingelogd</p>}
+                </InnerContainer>
+            </OuterContainer>
+        </>
+    )
+}
 
 
 export default logIn;
