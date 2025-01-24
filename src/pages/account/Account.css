@@ -1,0 +1,24 @@
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: calc(100%/3);
+    align-items: flex-start;
+}
+
+.accountInfo {
+    margin-bottom: 2rem;
+    align-content: flex-start;
+}
+
+.accountPassword {
+    display: flex;
+    flex-direction: column;
+    width: 20rem;
+}
+
+.accountInput {
+    width: 20rem;
+    padding: 0.25rem;
+    margin: 0.25rem 0;
+}

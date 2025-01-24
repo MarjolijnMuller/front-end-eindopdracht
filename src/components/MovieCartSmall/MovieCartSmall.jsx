@@ -1,14 +1,13 @@
 import './MovieCartSmall.css';
 import React from "react";
-import {Image} from "@phosphor-icons/react";
 import StarButton from "../starButton/StarButton.jsx";
 
-function MovieCartSmall() {
+function MovieCartSmall(props) {
     return (
         <div className="movieCartSmall">
-            <Image size={132} className="imageIcon"/>
+            <img src={props.image} className="moviePosterSmall"/>
             <div className="wrapperMovieCartSmall">
-            <p>streamingdienst</p>
+            <p>{props.service}</p>
             <StarButton/>
             </div>
         </div>

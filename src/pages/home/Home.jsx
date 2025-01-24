@@ -11,7 +11,7 @@ function Home() {
 
     return (
         <>
-            <Navigation/>
+            <Navigation disabled={true}/>
 
 
             <div className="flex">

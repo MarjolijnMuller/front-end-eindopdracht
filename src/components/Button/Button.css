@@ -51,3 +51,40 @@
     flex-basis: auto;
     flex-grow: 1;
 }
+
+/*-----submit en annuleren button*/
+.SubmitButton {
+    margin-right: 1rem;
+    width: auto;
+    padding: 0 1.75rem;
+    height: 2rem;
+    background: var(--text-color);
+    color: var(--accent-color);
+    font-size: 1rem;
+    border-radius: 12px;
+    font-weight: bold;
+    border: none;
+}
+
+.SubmitButton:hover {
+    background: var(--accent-color);
+    color: var(--text-color);
+}
+
+.AnnuleerButton {
+    margin-right: 1rem;
+    width: auto;
+    padding: 0 1.75rem;
+    height: 2rem;
+    background: var(--accent-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    border-radius: 12px;
+    font-weight: bold;
+    border: none;
+}
+
+.AnnuleerButton:hover {
+    background: var(--text-color);
+    color: var(--accent-color);
+}
