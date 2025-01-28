@@ -4,7 +4,7 @@ import TitleContainer from "../../components/TitleContainer/TitleContainer.jsx";
 import OuterContainer from "../../components/OuterContainer/OuterContainer.jsx";
 import ToggleSwitch from "../../components/ToggleSwitch/ToggleSwitch.jsx";
 import InnerContainer from "../../components/InnerContainer/InnerContainer.jsx";
-import MovieCartSmall from "../../components/MovieCartSmall/MovieCartSmall.jsx";
+import MovieCardSmall from "../../components/MovieCardSmall/MovieCardSmall.jsx";
 
 function Favorites() {
     return (
@@ -18,10 +18,10 @@ function Favorites() {
                     className={"toggleSwitchView"}/>
 
                 <InnerContainer>
-                    <MovieCartSmall/>
-                    <MovieCartSmall/>
-                    <MovieCartSmall/>
-                    <MovieCartSmall/>
+                    <MovieCardSmall/>
+                    <MovieCardSmall/>
+                    <MovieCardSmall/>
+                    <MovieCardSmall/>
                 </InnerContainer>
             </OuterContainer>
 

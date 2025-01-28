@@ -24,7 +24,7 @@ function Home() {
                 type={"button"}
                 name={"Aanmelden"}
                 className={"signInHome"}
-                onClick={true}/>
+                navigate={true}/>
         </>
     )
 }

@@ -45,7 +45,7 @@ function Navigation(props) {
                     type={"button"}
                     name={"Inloggen"}
                     className={'logInNavigation'}
-                    onClick={Navigation}
+                    navigate={Navigation}
                     disabled={false}/>
             </nav>
         </>

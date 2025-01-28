@@ -1,12 +1,12 @@
-import './MovieCartSmall.css';
+import './MovieCardSmall.css';
 import React from "react";
 import StarButton from "../starButton/StarButton.jsx";
 
-function MovieCartSmall(props) {
+function MovieCardSmall(props) {
     return (
-        <div className="movieCartSmall">
+        <div className="movieCardSmall">
             <img src={props.image} className="moviePosterSmall"/>
-            <div className="wrapperMovieCartSmall">
+            <div className="wrapperMovieCardSmall">
             <p>{props.service}</p>
             <StarButton/>
             </div>
@@ -14,4 +14,4 @@ function MovieCartSmall(props) {
     )
 }
 
-export default MovieCartSmall;
+export default MovieCardSmall;

@@ -6,7 +6,7 @@ function Button(props) {
     let navigate = useNavigate();
 
     const handleClick = () => {
-        if(props.onClick){
+        if(props.navigate){
             switch (props.className) {
                 case 'logInNavigation':
                     console.log('Navigating to /inloggen');

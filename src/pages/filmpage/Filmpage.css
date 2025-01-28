@@ -1,0 +1,52 @@
+.movieImage {
+    width: 20rem;
+}
+
+.allMovieInfo {
+    flex-shrink: 1;
+    width: calc(100% - 22rem);
+}
+
+.movieStats {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+
+}
+
+.movieInfo {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.directorsCastStreaming {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.director, .castMember, .streamingService {
+    list-style: none;
+}
+
+.streamingService {
+    display: flex;
+    flex-direction: row;
+}
+
+.streamingService a, .streamingService a:visited, .streamingService a:link {
+    color: var(--accent-color);
+    font-size: 1rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.streamingService a:hover {
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
