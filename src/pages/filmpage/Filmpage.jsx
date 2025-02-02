@@ -4,9 +4,10 @@ import Navigation from "../../components/Navigation/Navigation.jsx";
 import OuterContainer from "../../components/OuterContainer/OuterContainer.jsx";
 import InnerContainer from "../../components/InnerContainer/InnerContainer.jsx";
 import StarButton from "../../components/starButton/StarButton.jsx";
-import {Link, NavLink, useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import uniqueStreamingService from "../../helpers/uniqueStreamingService.js";
 
 function Filmpage() {
     const {id} = useParams();
@@ -32,7 +33,9 @@ function Filmpage() {
                     }
                 });
                 console.log(result.data);
-                setShow(result.data)
+                setShow(result.data);
+                setStreamingServices(result.data.streamingOptions.nl);
+                console.log(result.data.streamingOptions.nl);
                 toggleLoading(false);
             } catch (error) {
                 console.log(error);
@@ -43,6 +46,7 @@ function Filmpage() {
         fetchOneShow();
     }, [])
 
+    const uniqueServices = uniqueStreamingService(streamingServices)
 
     return (
         <>
@@ -87,8 +91,11 @@ function Filmpage() {
                                 </div>
                                 <div className="directorsCastStreaming">
                                     <h4>Services:</h4>
-
-                                    {show.streamingOptions.nl.map((streamingOption) => {
+                                    {uniqueServices.map((serviceName) => <li
+                                        key={serviceName} className="streamingService">
+                                        <p>{serviceName}</p>
+                                    </li>)}
+                                        {/*{show.streamingOptions.nl.map((streamingOption) => {
                                             return (
                                                 <li key={streamingOption.service.id} className="streamingService">
                                                     <p>{streamingOption.service.name} - </p>
@@ -96,15 +103,15 @@ function Filmpage() {
                                                 </li>
                                             )
                                         }
-                                    )}
-                                </div>
-                        </div>
-                    </div>
+                                    )}*/}
+                                    </div>
+                                        </div>
+                                        </div>
 
-                </InnerContainer>
-                </OuterContainer>
-                </>
-            }
+                                        </InnerContainer>
+                                        </OuterContainer>
+                                        </>
+                                    }
         </>
     )
 }
