@@ -3,12 +3,17 @@ import Navigation from "../../components/Navigation/Navigation.jsx";
 import TitleContainer from "../../components/TitleContainer/TitleContainer.jsx";
 import OuterContainer from "../../components/OuterContainer/OuterContainer.jsx";
 import axios from "axios";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import Button from "../../components/Button/Button.jsx";
 import InnerContainer from "../../components/InnerContainer/InnerContainer.jsx";
 import ToggleSwitch from "../../components/ToggleSwitch/ToggleSwitch.jsx";
 import MovieCardSmall from "../../components/MovieCardSmall/MovieCardSmall.jsx";
 import {Link} from "react-router-dom";
+import {MovieContext} from "../../context/MovieContext.jsx";
+import {ViewContext} from "../../context/ViewContext.jsx";
+import MovieCardLarge from "../../components/MovieCardLarge/MovieCardLarge.jsx";
+import {GenreContext} from "../../context/GenreContext.jsx";
+import {ServiceContext} from "../../context/ServiceContext.jsx";
 
 function Searcher() {
     const [dutchServices, setDutchServices] = useState([]);
@@ -20,6 +25,10 @@ function Searcher() {
     const [showError, toggleShowError] = useState(false);
     const [hasSearched, togglehasSearched] = useState(false)
     const [initialLoad, toggleInitialLoad] = useState(true);
+    const {isMovie} = useContext(MovieContext);
+    const {viewTiles} = useContext(ViewContext);
+    const {selectedGenres} = useContext(GenreContext);
+    const {selectedServices, services} = useContext(ServiceContext);
 
     useEffect(() => {
         async function getDutchServices() {
@@ -79,11 +88,11 @@ function Searcher() {
             togglehasSearched(true);
             const result = await axios.get('https://streaming-availability.p.rapidapi.com/shows/search/filters', {
                 params: {
+                    series_granularity: 'episode',
                     country: "nl",
-                    catalogs: "netflix,prime",
-                    genres: "romance,comedy",
-                    showType: "movie",
-
+                    catalogs: `${selectedServices}`,
+                    genres: `${selectedGenres}`,
+                    show_type: `${isMovie}`,
                 },
                 headers: {
                     'x-rapidapi-key': '5b9c13ca93msh7d7c427331406c1p13d79fjsne76971a64dcc',
@@ -100,7 +109,6 @@ function Searcher() {
         }
     }
 
-
     return (
         <>
             <Navigation/>
@@ -113,7 +121,8 @@ function Searcher() {
                     <ToggleSwitch
                         className={"toggleSwitchMovie"}
                         firstTerm={"Films"}
-                        secondTerm={"Series"}/>
+                        secondTerm={"Series"}
+                    />
                 </InnerContainer>
                 <h2>Streamingdiensten</h2>
                 <InnerContainer>
@@ -124,8 +133,12 @@ function Searcher() {
                             {dutchServices.map((service) => {
                                     return (
 
-                                        <label className="service" key={service.id}>
-                                            <input type="checkbox" className="checkboxService"/>
+                                        <label className="service" key={service.id} >
+                                            <input
+                                                type="checkbox"
+                                                className="checkboxService"
+                                                onClick={() => services(service.id)}
+                                            />
                                             <p>{service.name}</p>
                                         </label>
 
@@ -146,7 +159,8 @@ function Searcher() {
                                     <Button key={genre.id}
                                             type={"button"}
                                             className={"genreButton"}
-                                            name={genre.name}/>
+                                            name={genre.name}
+                                            id={genre.id}/>
                                 )
                             })}
                         </ul>
@@ -177,19 +191,46 @@ function Searcher() {
                         shows.length > 0 ? (
                             <ul className="movieCards">
                                 {shows.map((show) => {
-                                    return (
-                                        <div key={show.id}>
-                                            <Link to={`/filmserie/${show.id}`}>
-                                                <MovieCardSmall
-                                                    key={show.id}
-                                                    image={show.imageSet.verticalPoster.w240}
-                                                    service={show.streamingOptions
-                                                        .nl[0].service.name}
-                                                />
-                                            </Link>
-                                        </div>
-                                    )
-                                })}
+                                    if (show.streamingOptions && show.streamingOptions.nl && show.streamingOptions.nl.length > 0) {
+                                        const firstService = show.streamingOptions.nl[0]; // Store for easier access
+
+                                        return (
+                                            <div key={show.id}>
+                                                <Link to={`/filmserie/${show.id}`}>
+                                                    {viewTiles ?
+                                                    <MovieCardSmall
+                                                        key={show.id}
+                                                        image={show.imageSet.verticalPoster.w240}
+                                                        service={firstService.service.name}
+                                                    /> :
+                                                        <MovieCardLarge
+                                                            key={show.id}
+                                                            image={show.imageSet.verticalPoster.w240}
+                                                            service={firstService.service.name}/>
+                                                    }
+                                                </Link>
+                                            </div>
+                                        );
+                                    }else{
+                                        return (
+                                            <div key={show.id}>
+                                                <Link to={`/filmserie/${show.id}`}>
+                                                    {viewTiles ?
+                                                        <MovieCardSmall
+                                                            key={show.id}
+                                                            image={show.imageSet.verticalPoster.w240}
+
+                                                        /> :
+                                                        <MovieCardLarge
+                                                            key={show.id}
+                                                            image={show.imageSet.verticalPoster.w240}
+                                                            />
+                                                    }
+                                                </Link>
+                                            </div>
+                                        );
+                                    }
+                                })                                }
                             </ul>
                         ) : <p>No shows found</p>
                     ) : <p>Search for your favorite shows!</p>}

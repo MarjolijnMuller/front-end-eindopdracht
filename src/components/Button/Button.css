@@ -52,6 +52,10 @@
     flex-grow: 1;
 }
 
+.genreButton+.clicked {
+    background-color: var(--light-secondary-color);
+}
+
 /*-----submit en annuleren button*/
 .SubmitButton {
     margin-right: 1rem;
