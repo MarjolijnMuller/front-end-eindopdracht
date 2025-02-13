@@ -1,8 +1,15 @@
 import './MovieCardLarge.css';
-import React from "react";
+import React, {useContext} from "react";
 import StarButton from "../starButton/StarButton.jsx";
+import {ServiceContext} from "../../context/ServiceContext.jsx";
 
 function MovieCardLarge(props) {
+    const {selectedServices} = useContext(ServiceContext);
+    const movieServices = props.service;
+
+    const selectedService = movieServices.find(serviceAvailability =>
+        selectedServices.includes(serviceAvailability.service.id));
+
     return (
         <div className="movieCartLarge">
             <img src={props.image} className="moviePosterLarge"/>
@@ -12,7 +19,9 @@ function MovieCardLarge(props) {
                 <p>{props.information}</p>
 
                 <div className="innerWrapperMovieCart">
-                    <p>{props.service}</p>
+                    {selectedService && (
+                        <p>{selectedService.service.name}</p>
+                    )}
                     <p>{props.rating}/100</p>
                     <StarButton/>
                 </div>
