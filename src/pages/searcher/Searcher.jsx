@@ -13,6 +13,7 @@ import {MovieContext} from "../../context/MovieContext.jsx";
 import {ViewContext} from "../../context/ViewContext.jsx";
 import MovieCardLarge from "../../components/MovieCardLarge/MovieCardLarge.jsx";
 import {GenreContext} from "../../context/GenreContext.jsx";
+import {ServiceContext} from "../../context/ServiceContext.jsx";
 
 function Searcher() {
     const [dutchServices, setDutchServices] = useState([]);
@@ -27,6 +28,7 @@ function Searcher() {
     const {isMovie} = useContext(MovieContext);
     const {viewTiles} = useContext(ViewContext);
     const {selectedGenres} = useContext(GenreContext);
+    const {selectedServices, services} = useContext(ServiceContext);
 
     useEffect(() => {
         async function getDutchServices() {
@@ -88,7 +90,7 @@ function Searcher() {
                 params: {
                     series_granularity: 'episode',
                     country: "nl",
-                    catalogs: "netflix,prime",
+                    catalogs: `${selectedServices}`,
                     genres: `${selectedGenres}`,
                     show_type: `${isMovie}`,
                 },
@@ -131,8 +133,12 @@ function Searcher() {
                             {dutchServices.map((service) => {
                                     return (
 
-                                        <label className="service" key={service.id}>
-                                            <input type="checkbox" className="checkboxService"/>
+                                        <label className="service" key={service.id} >
+                                            <input
+                                                type="checkbox"
+                                                className="checkboxService"
+                                                onClick={() => services(service.id)}
+                                            />
                                             <p>{service.name}</p>
                                         </label>
 

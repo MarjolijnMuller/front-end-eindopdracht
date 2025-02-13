@@ -25,7 +25,6 @@ function Button(props) {
         if(props.className === "genreButton") {
             genres(props.id);
             setIsClicked(true);
-            console.log(selectedGenres)
         }
 
 
