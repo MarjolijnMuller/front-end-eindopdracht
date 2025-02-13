@@ -206,6 +206,9 @@ function Searcher() {
                                                         <MovieCardLarge
                                                             key={show.id}
                                                             image={show.imageSet.verticalPoster.w240}
+                                                            title={show.originalTitle}
+                                                            information={show.overview}
+                                                            rating={show.rating}
                                                             service={firstService.service.name}/>
                                                     }
                                                 </Link>

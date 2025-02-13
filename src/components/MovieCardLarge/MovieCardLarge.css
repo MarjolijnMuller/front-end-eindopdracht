@@ -16,6 +16,7 @@
     align-items: stretch;
     flex-shrink: 1;
     gap: 0.5rem;
+    padding-left: 1rem;
 }
 
 .innerWrapperMovieCart {
@@ -23,4 +24,9 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+}
+
+.moviePosterLarge {
+        object-fit: contain;
+        height: 14rem;
 }
