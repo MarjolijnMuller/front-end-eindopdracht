@@ -7,6 +7,7 @@ import Account from "./pages/account/Account.jsx";
 import NotFound from "./pages/NotFound/NotFound.jsx";
 import LogIn from "./pages/log in/LogIn.jsx";
 import SignIn from "./pages/sign in/SignIn.jsx";
+import Filmpage from "./pages/filmpage/Filmpage.jsx";
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
                <Route path="/account" element={<Account/>} />
                <Route path="/inloggen" element={<LogIn/>} />
                <Route path="/aanmelden" element={<SignIn/>} />
+               <Route path="/filmserie/:id" element={<Filmpage/>} />
                <Route path="*" element={<NotFound/>} />
 
            </Routes>

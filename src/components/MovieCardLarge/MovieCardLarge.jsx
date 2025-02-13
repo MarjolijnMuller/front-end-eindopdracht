@@ -1,10 +1,10 @@
-import './MovieCartLarge.css';
+import './MovieCardLarge.css';
 import React from "react";
 import {Image, Star} from "@phosphor-icons/react";
 import Button from "../Button/Button.jsx";
 import StarButton from "../starButton/StarButton.jsx";
 
-function MovieCartLarge() {
+function MovieCardLarge() {
     return (
         <div className="movieCartLarge">
             <Image size={500} className="imageIcon"/>
@@ -22,4 +22,4 @@ function MovieCartLarge() {
     )
 }
 
-export default MovieCartLarge;
+export default MovieCardLarge;

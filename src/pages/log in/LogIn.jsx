@@ -48,7 +48,7 @@ function logIn() {
 
     return (
         <>
-            <Navigation disabled={true}/>
+            <Navigation/>
             <TitleContainer title="Inloggen"/>
 
 

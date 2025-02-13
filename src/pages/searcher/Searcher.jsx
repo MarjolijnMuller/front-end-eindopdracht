@@ -7,22 +7,24 @@ import {useEffect, useState} from "react";
 import Button from "../../components/Button/Button.jsx";
 import InnerContainer from "../../components/InnerContainer/InnerContainer.jsx";
 import ToggleSwitch from "../../components/ToggleSwitch/ToggleSwitch.jsx";
-import MovieCartSmall from "../../components/MovieCartSmall/MovieCartSmall.jsx";
-import MovieCartLarge from "../../components/MovieCartLarge/MovieCartLarge.jsx";
+import MovieCardSmall from "../../components/MovieCardSmall/MovieCardSmall.jsx";
+import {Link} from "react-router-dom";
 
 function Searcher() {
     const [dutchServices, setDutchServices] = useState([]);
     const [genres, setGenres] = useState([]);
-    const [usedServices, setUsedServices] = useState("");
-    const [usedGenres, setUsedGenres] = useState("");
     const [shows, setShows] = useState([]);
     const [loading, toggleLoading] = useState(false)
-    const [error, toggleError] = useState(false);
+    const [serviceError, toggleServiceError] = useState(false);
+    const [genreError, toggleGenreError] = useState(false);
+    const [showError, toggleShowError] = useState(false);
+    const [hasSearched, togglehasSearched] = useState(false)
+    const [initialLoad, toggleInitialLoad] = useState(true);
 
     useEffect(() => {
         async function getDutchServices() {
             toggleLoading(true);
-            toggleError(false);
+            toggleServiceError(false);
             try {
                 const result = await axios.get('https://streaming-availability.p.rapidapi.com/countries', {
                     params: {
@@ -38,19 +40,18 @@ function Searcher() {
                 setDutchServices(result.data.nl.services);
             } catch (error) {
                 console.error(error);
-                toggleError(true);
+                toggleServiceError(true);
             }
         }
 
         async function getGenres() {
             toggleLoading(true);
-            toggleError(false);
+            toggleGenreError(false);
             try {
                 const result = await axios.get('https://streaming-availability.p.rapidapi.com/genres', {
                     params: {
                         output_language: 'en',
                         country: 'nl',
-
                     },
                     headers: {
                         'x-rapidapi-key': '5b9c13ca93msh7d7c427331406c1p13d79fjsne76971a64dcc',
@@ -62,7 +63,7 @@ function Searcher() {
                 setGenres(result.data);
             } catch (error) {
                 console.error(error);
-                toggleError(true);
+                toggleGenreError(true);
             }
         }
 
@@ -71,13 +72,16 @@ function Searcher() {
     }, []);
 
 
-
-    async function fetchShows(){
-        try{
+    async function fetchShows() {
+        togglehasSearched(false);
+        toggleShowError(false);
+        try {
+            togglehasSearched(true);
             const result = await axios.get('https://streaming-availability.p.rapidapi.com/shows/search/filters', {
                 params: {
-                    country: 'nl',
-                    catalogs: ["netflix"],
+                    country: "nl",
+                    catalogs: "netflix,prime",
+                    genres: "romance,comedy",
                     showType: "movie",
 
                 },
@@ -88,8 +92,11 @@ function Searcher() {
             });
             console.log(result.data.shows);
             setShows(result.data.shows);
-        }catch(error){
+        } catch (error) {
             console.error(error);
+            toggleShowError(true);
+        } finally {
+            toggleInitialLoad(false);
         }
     }
 
@@ -97,10 +104,11 @@ function Searcher() {
     return (
         <>
             <Navigation/>
-<button type="button" onClick={fetchShows}>Klik</button>
+
             <TitleContainer title='Zoeken'/>
 
             <OuterContainer>
+
                 <InnerContainer>
                     <ToggleSwitch
                         className={"toggleSwitchMovie"}
@@ -109,34 +117,40 @@ function Searcher() {
                 </InnerContainer>
                 <h2>Streamingdiensten</h2>
                 <InnerContainer>
-                    {loading ? <p>Loading...</p> :
+                    {loading && <p>Loading...</p>}
+                    {serviceError && <p>Something went wrong. Try again!</p>}
+                    {!loading && !serviceError && (
                         <>
-                    {dutchServices.map((service) => {
-                            return (
+                            {dutchServices.map((service) => {
+                                    return (
 
-                                <label className="service" key={service.id}>
-                                    <input type="checkbox" className="checkboxService"/>
-                                    <p>{service.name}</p>
-                                </label>
+                                        <label className="service" key={service.id}>
+                                            <input type="checkbox" className="checkboxService"/>
+                                            <p>{service.name}</p>
+                                        </label>
 
-                            )
-                        }
-                    )}</>
+                                    )
+                                }
+                            )}</>
+                    )
                     }
                 </InnerContainer>
                 <h2>Genres</h2>
                 <InnerContainer>
-                    {loading ? <p>Loading...</p> :
-                    <ul className="allGenreButtons">
-                        {genres.map((genre) => {
-                            return (
-                                <Button key={genre.id}
-                                        type={"button"}
-                                        className={"genreButton"}
-                                        name={genre.name}/>
-                            )
-                        })}
-                    </ul>
+                    {loading && <p>Loading...</p>}
+                    {genreError && <p>Something went wrong. Try again!</p>}
+                    {!loading && !genreError && (
+                        <ul className="allGenreButtons">
+                            {genres.map((genre) => {
+                                return (
+                                    <Button key={genre.id}
+                                            type={"button"}
+                                            className={"genreButton"}
+                                            name={genre.name}/>
+                                )
+                            })}
+                        </ul>
+                    )
                     }
                 </InnerContainer>
                 <InnerContainer>
@@ -144,6 +158,11 @@ function Searcher() {
                         Zoekwoord:
                         <input type="text" id="inputKeyword"/>
                     </label>
+
+
+                    <button type="button" className="searchButton" onClick={fetchShows}>
+                        Zoeken
+                    </button>
                 </InnerContainer>
             </OuterContainer>
 
@@ -152,20 +171,28 @@ function Searcher() {
                     className={"toggleSwitchView"}/>
 
                 <InnerContainer>
-                    {shows && shows.length > 0 ? (
-                    <ul>
-                        {shows.map((show) => {
-                            return (
-                                <MovieCartSmall
-                                    key={show.id}
-                                    image={show.imageSet.verticalPoster.w240}
-                                    service={show.streamingOptions
-                                        .nl[0].service.name}
-                                />
-                            )
-                        })}
-                    </ul>
-                    ) : ( <p>Geen shows gevonden</p>)}
+                    {showError && <p>Something went wrong. Try again!</p>}
+                    {hasSearched ? (
+                        initialLoad ? <p>Loading...</p> :
+                        shows.length > 0 ? (
+                            <ul className="movieCards">
+                                {shows.map((show) => {
+                                    return (
+                                        <div key={show.id}>
+                                            <Link to={`/filmserie/${show.id}`}>
+                                                <MovieCardSmall
+                                                    key={show.id}
+                                                    image={show.imageSet.verticalPoster.w240}
+                                                    service={show.streamingOptions
+                                                        .nl[0].service.name}
+                                                />
+                                            </Link>
+                                        </div>
+                                    )
+                                })}
+                            </ul>
+                        ) : <p>No shows found</p>
+                    ) : <p>Search for your favorite shows!</p>}
                 </InnerContainer>
                 <InnerContainer>
                     <p>Vorige</p>
