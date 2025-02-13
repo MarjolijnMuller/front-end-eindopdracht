@@ -13,7 +13,7 @@ Table of Contents
 /*-------------2. Typography-------------*/
 
 
-body, button {
+body, button, a {
   color: var(--text-color);
 }
 
@@ -26,7 +26,7 @@ a  {
 }
 
 a:hover {
-  color: var(--primary-color);
+  color: var(--text-color);
   text-decoration: none;
 }
 

@@ -1,9 +1,13 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import './Button.css';
 import {useNavigate} from "react-router-dom";
+import {GenreContext} from "../../context/GenreContext.jsx";
 
 function Button(props) {
     let navigate = useNavigate();
+    const {genres, selectedGenres}= useContext(GenreContext);
+    const [isClicked, setIsClicked] = useState(false);
+
 
     const handleClick = () => {
         if(props.navigate){
@@ -18,6 +22,11 @@ function Button(props) {
                     break;
             }
         }
+        if(props.className === "genreButton") {
+            genres(props.id);
+            setIsClicked(true);
+            console.log(selectedGenres)
+        }
 
 
     };
@@ -25,7 +34,7 @@ function Button(props) {
     return (
         <button
             type={props.type}
-            className={props.className}
+            className={`${props.className} ${isClicked ? 'clicked' : ''}`}
             onClick={handleClick}
             disabled={props.disabled}
         >
