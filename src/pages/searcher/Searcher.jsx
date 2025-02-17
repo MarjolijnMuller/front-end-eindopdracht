@@ -211,7 +211,6 @@ function Searcher() {
                     {showError && <p>Something went wrong. Try again!</p>}
                     {hasSearched ? (
                         initialLoad ? <p>Loading...</p> :
-
                             allShows.length > 0 ? ( // Use allShows here
                                 <ul className="movieCards">
                                     {allShows.map((show) => { // Map over allShows
