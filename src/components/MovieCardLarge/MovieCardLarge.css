@@ -3,19 +3,35 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    width: calc(100vw - 11rem);
     height: 15rem;
     background-color: var(--main-bg-color);
     padding: 0.5rem;
+    flex-shrink: 1;
 }
 
 .wrapperMovieCart{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    align-items: stretch;
+    align-items: flex-start;
     flex-shrink: 1;
     gap: 0.5rem;
+    padding-left: 1rem;
+    flex-grow: 2;
+    height: 100%;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.movieInfo {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    max-height: 4.5rem;
 }
 
 .innerWrapperMovieCart {
@@ -23,4 +39,10 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+}
+
+.moviePosterLarge {
+        object-fit: contain;
+        height: 14rem;
 }

@@ -1,22 +1,30 @@
 import './MovieCardLarge.css';
-import React from "react";
-import {Image, Star} from "@phosphor-icons/react";
-import Button from "../Button/Button.jsx";
+import React, {useContext} from "react";
 import StarButton from "../starButton/StarButton.jsx";
+import {ServiceContext} from "../../context/ServiceContext.jsx";
 
-function MovieCardLarge() {
+function MovieCardLarge(props) {
+    const {selectedServices} = useContext(ServiceContext);
+    const movieServices = props.service;
+
+    const selectedService = movieServices.find(serviceAvailability =>
+        selectedServices.includes(serviceAvailability.service.id));
+
     return (
         <div className="movieCartLarge">
-            <Image size={500} className="imageIcon"/>
-            <div className="wrapperMovieCart">
-            <h3>Titel</h3>
-            <p>Informatie film - Lorem ipsum dolor sit amet consectetur. Potenti tempor consequat erat quis fermentum eu. Est eu phasellus semper sit iaculis aliquet egestas. In duis amet viverra elementum malesuada vitae. Vitae at feugiat eleifend sapien lorem eget vel amet.</p>
-            <div className="innerWrapperMovieCart">
-                <p>streamingdienst</p>
-            <p>IMBD-score</p>
-                <StarButton/>
+            <img src={props.image} className="moviePosterLarge"/>
 
-            </div>
+            <div className="wrapperMovieCart">
+                <h3>{props.title}</h3>
+                <p className="movieInfo">{props.information}</p>
+
+                <div className="innerWrapperMovieCart">
+                    {selectedService && (
+                        <p>{selectedService.service.name}</p>
+                    )}
+                    <p>{props.rating}/100</p>
+                    <StarButton/>
+                </div>
             </div>
         </div>
     )
