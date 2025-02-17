@@ -192,7 +192,6 @@ function Searcher() {
                             <ul className="movieCards">
                                 {shows.map((show) => {
                                     if (show.streamingOptions && show.streamingOptions.nl && show.streamingOptions.nl.length > 0) {
-                                        const firstService = show.streamingOptions.nl[0]; // Store for easier access
 
                                         return (
                                             <div key={show.id}>
@@ -201,7 +200,7 @@ function Searcher() {
                                                     <MovieCardSmall
                                                         key={show.id}
                                                         image={show.imageSet.verticalPoster.w240}
-                                                        service={firstService.service.name}
+                                                        service={show.streamingOptions.nl}
                                                     /> :
                                                         <MovieCardLarge
                                                             key={show.id}
@@ -209,7 +208,7 @@ function Searcher() {
                                                             title={show.originalTitle}
                                                             information={show.overview}
                                                             rating={show.rating}
-                                                            service={firstService.service.name}/>
+                                                            service={show.streamingOptions.nl}/>
                                                     }
                                                 </Link>
                                             </div>
