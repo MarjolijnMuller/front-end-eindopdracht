@@ -66,10 +66,9 @@
 .movieCards {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     flex-wrap: wrap;
     gap: 1rem;
-    flex-grow: 1;
-    flex-shrink: 1;
 }
 
 .moreShows {
