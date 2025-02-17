@@ -52,7 +52,7 @@
     flex-grow: 1;
 }
 
-.genreButton+.clicked {
+.genreButton.clicked {
     background-color: var(--light-secondary-color);
 }
 
