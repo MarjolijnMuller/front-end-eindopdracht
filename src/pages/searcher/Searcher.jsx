@@ -25,6 +25,7 @@ function Searcher() {
     const [showError, toggleShowError] = useState(false);
     const [hasSearched, togglehasSearched] = useState(false)
     const [initialLoad, toggleInitialLoad] = useState(true);
+    const [nextShows, setNextShows] = useState("");
     const {isMovie} = useContext(MovieContext);
     const {viewTiles} = useContext(ViewContext);
     const {selectedGenres} = useContext(GenreContext);
@@ -93,14 +94,18 @@ function Searcher() {
                     catalogs: `${selectedServices}`,
                     genres: `${selectedGenres}`,
                     show_type: `${isMovie}`,
+                    cursor: `${nextShows}`,
                 },
                 headers: {
                     'x-rapidapi-key': '5b9c13ca93msh7d7c427331406c1p13d79fjsne76971a64dcc',
                     'x-rapidapi-host': 'streaming-availability.p.rapidapi.com'
                 }
             });
-            console.log(result.data.shows);
+            console.log(result.data);
             setShows(result.data.shows);
+            if(result.data.hasMore){
+                setNextShows(result.data.nextCursor);
+            }
         } catch (error) {
             console.error(error);
             toggleShowError(true);
@@ -237,7 +242,7 @@ function Searcher() {
                 </InnerContainer>
                 <InnerContainer>
                     <p>Vorige</p>
-                    <p>Volgende</p>
+                    <p onClick={fetchShows}>Volgende</p>
                 </InnerContainer>
             </OuterContainer>
         </>
