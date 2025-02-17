@@ -36,6 +36,7 @@ function Searcher() {
         async function getDutchServices() {
             toggleLoading(true);
             toggleServiceError(false);
+            togglehasSearched(false);
             try {
                 const result = await axios.get('https://streaming-availability.p.rapidapi.com/countries', {
                     params: {
@@ -86,6 +87,56 @@ function Searcher() {
     async function fetchShows() {
         togglehasSearched(false);
         toggleShowError(false);
+        setShows([]);
+        setAllShows([]);
+        try {
+            togglehasSearched(true);
+            const result = await axios.get('https://streaming-availability.p.rapidapi.com/shows/search/filters', {
+                params: {
+                    series_granularity: 'episode',
+                    country: "nl",
+                    catalogs: `${selectedServices}`,
+                    genres: `${selectedGenres}`,
+                    show_type: `${isMovie}`,
+                },
+                headers: {
+                    'x-rapidapi-key': '5b9c13ca93msh7d7c427331406c1p13d79fjsne76971a64dcc',
+                    'x-rapidapi-host': 'streaming-availability.p.rapidapi.com'
+                }
+            });
+            console.log(result.data);
+            setShows(result.data.shows);
+            if (result.data && result.data.shows) {
+                if (nextShows) {
+                    // Append new shows to existing shows
+                    setAllShows(prevShows => [...prevShows, ...result.data.shows]); //Update shows state
+                } else {
+                    // Initial fetch, replace existing shows
+                    setAllShows(result.data.shows); //Update shows state
+                }
+
+                if (result.data.hasMore) {
+                    setNextShows(result.data.nextCursor);
+                } else {
+                    setNextShows(null); // No more shows to load
+                }
+            } else {
+                console.error("Invalid data received from API:", result.data);
+                toggleShowError(true);
+                setAllShows([]);
+            }
+        } catch (error) {
+            console.error(error);
+            toggleShowError(true);
+            setAllShows([]);
+        } finally {
+            toggleInitialLoad(false);
+        }
+    }
+
+    async function fetchNextShows() {
+        togglehasSearched(false);
+        toggleShowError(false);
         try {
             togglehasSearched(true);
             const result = await axios.get('https://streaming-availability.p.rapidapi.com/shows/search/filters', {
@@ -107,12 +158,10 @@ function Searcher() {
             if (result.data && result.data.shows) {
                 if (nextShows) {
                     // Append new shows to existing shows
-                    setAllShows([...allShows, ...result.data.shows]);
-                    setShows(result.data.shows); //Update shows state
+                    setAllShows(prevShows => [...prevShows, ...result.data.shows]); //Update shows state
                 } else {
                     // Initial fetch, replace existing shows
-                    setAllShows(result.data.shows);
-                    setShows(result.data.shows); //Update shows state
+                    setAllShows(result.data.shows); //Update shows state
                 }
 
                 if (result.data.hasMore) {
@@ -123,10 +172,12 @@ function Searcher() {
             } else {
                 console.error("Invalid data received from API:", result.data);
                 toggleShowError(true);
+                setAllShows([]);
             }
         } catch (error) {
             console.error(error);
             toggleShowError(true);
+            setAllShows([]);
         } finally {
             toggleInitialLoad(false);
         }
@@ -215,7 +266,6 @@ function Searcher() {
                                 <ul className="movieCards">
                                     {allShows.map((show) => { // Map over allShows
                                         if (show.streamingOptions && show.streamingOptions.nl && show.streamingOptions.nl.length > 0) {
-                                            const firstService = show.streamingOptions.nl[0];
 
                                             return (
                                                 <div key={show.id}>
@@ -224,12 +274,15 @@ function Searcher() {
                                                             <MovieCardSmall
                                                                 key={show.id}
                                                                 image={show.imageSet.verticalPoster.w240}
-                                                                service={firstService.service.name}
+                                                                service={show.streamingOptions.nl}
                                                             /> :
                                                             <MovieCardLarge
                                                                 key={show.id}
                                                                 image={show.imageSet.verticalPoster.w240}
-                                                                service={firstService.service.name} />
+                                                                title={show.originalTitle}
+                                                                information={show.overview}
+                                                                rating={show.rating}
+                                                                service={show.streamingOptions.nl}/>
                                                         }
                                                     </Link>
                                                 </div>
@@ -259,7 +312,7 @@ function Searcher() {
                 </InnerContainer>
                 {nextShows && (
                     <InnerContainer classNameAdd="center">
-                        <button className={"searchButton moreShows"} onClick={fetchShows}>Get more shows!</button>
+                        <button className={"searchButton moreShows"} onClick={fetchNextShows}>Get more shows!</button>
                     </InnerContainer>
                 )}
             </OuterContainer>
