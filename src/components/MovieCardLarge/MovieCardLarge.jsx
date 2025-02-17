@@ -16,7 +16,7 @@ function MovieCardLarge(props) {
 
             <div className="wrapperMovieCart">
                 <h3>{props.title}</h3>
-                <p>{props.information}</p>
+                <p className="movieInfo">{props.information}</p>
 
                 <div className="innerWrapperMovieCart">
                     {selectedService && (
