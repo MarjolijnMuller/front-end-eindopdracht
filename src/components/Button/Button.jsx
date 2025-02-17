@@ -5,7 +5,7 @@ import {GenreContext} from "../../context/GenreContext.jsx";
 
 function Button(props) {
     let navigate = useNavigate();
-    const {genres, selectedGenres}= useContext(GenreContext);
+    const {genres}= useContext(GenreContext);
     const [isClicked, setIsClicked] = useState(false);
 
 
@@ -24,7 +24,7 @@ function Button(props) {
         }
         if(props.className === "genreButton") {
             genres(props.id);
-            setIsClicked(true);
+            setIsClicked(!isClicked);
         }
 
 

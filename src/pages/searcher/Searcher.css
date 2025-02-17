@@ -70,3 +70,10 @@
     gap: 1rem;
 }
 
+.moreShows {
+    height: 2rem;
+    width: 12rem;
+    margin: 0.5rem;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}

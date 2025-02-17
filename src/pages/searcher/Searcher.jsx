@@ -19,6 +19,7 @@ function Searcher() {
     const [dutchServices, setDutchServices] = useState([]);
     const [genres, setGenres] = useState([]);
     const [shows, setShows] = useState([]);
+    const [allShows, setAllShows] = useState([]);
     const [loading, toggleLoading] = useState(false)
     const [serviceError, toggleServiceError] = useState(false);
     const [genreError, toggleGenreError] = useState(false);
@@ -103,8 +104,25 @@ function Searcher() {
             });
             console.log(result.data);
             setShows(result.data.shows);
-            if(result.data.hasMore){
-                setNextShows(result.data.nextCursor);
+            if (result.data && result.data.shows) {
+                if (nextShows) {
+                    // Append new shows to existing shows
+                    setAllShows([...allShows, ...result.data.shows]);
+                    setShows(result.data.shows); //Update shows state
+                } else {
+                    // Initial fetch, replace existing shows
+                    setAllShows(result.data.shows);
+                    setShows(result.data.shows); //Update shows state
+                }
+
+                if (result.data.hasMore) {
+                    setNextShows(result.data.nextCursor);
+                } else {
+                    setNextShows(null); // No more shows to load
+                }
+            } else {
+                console.error("Invalid data received from API:", result.data);
+                toggleShowError(true);
             }
         } catch (error) {
             console.error(error);
@@ -193,57 +211,57 @@ function Searcher() {
                     {showError && <p>Something went wrong. Try again!</p>}
                     {hasSearched ? (
                         initialLoad ? <p>Loading...</p> :
-                        shows.length > 0 ? (
-                            <ul className="movieCards">
-                                {shows.map((show) => {
-                                    if (show.streamingOptions && show.streamingOptions.nl && show.streamingOptions.nl.length > 0) {
-                                        const firstService = show.streamingOptions.nl[0]; // Store for easier access
+                            allShows.length > 0 ? ( // Use allShows here
+                                <ul className="movieCards">
+                                    {allShows.map((show) => { // Map over allShows
+                                        if (show.streamingOptions && show.streamingOptions.nl && show.streamingOptions.nl.length > 0) {
+                                            const firstService = show.streamingOptions.nl[0];
 
-                                        return (
-                                            <div key={show.id}>
-                                                <Link to={`/filmserie/${show.id}`}>
-                                                    {viewTiles ?
-                                                    <MovieCardSmall
-                                                        key={show.id}
-                                                        image={show.imageSet.verticalPoster.w240}
-                                                        service={firstService.service.name}
-                                                    /> :
-                                                        <MovieCardLarge
-                                                            key={show.id}
-                                                            image={show.imageSet.verticalPoster.w240}
-                                                            service={firstService.service.name}/>
-                                                    }
-                                                </Link>
-                                            </div>
-                                        );
-                                    }else{
-                                        return (
-                                            <div key={show.id}>
-                                                <Link to={`/filmserie/${show.id}`}>
-                                                    {viewTiles ?
-                                                        <MovieCardSmall
-                                                            key={show.id}
-                                                            image={show.imageSet.verticalPoster.w240}
+                                            return (
+                                                <div key={show.id}>
+                                                    <Link to={`/filmserie/${show.id}`}>
+                                                        {viewTiles ?
+                                                            <MovieCardSmall
+                                                                key={show.id}
+                                                                image={show.imageSet.verticalPoster.w240}
+                                                                service={firstService.service.name}
+                                                            /> :
+                                                            <MovieCardLarge
+                                                                key={show.id}
+                                                                image={show.imageSet.verticalPoster.w240}
+                                                                service={firstService.service.name} />
+                                                        }
+                                                    </Link>
+                                                </div>
+                                            );
+                                        } else {
+                                            return (
+                                                <div key={show.id}>
+                                                    <Link to={`/filmserie/${show.id}`}>
+                                                        {viewTiles ?
+                                                            <MovieCardSmall
+                                                                key={show.id}
+                                                                image={show.imageSet.verticalPoster.w240}
 
-                                                        /> :
-                                                        <MovieCardLarge
-                                                            key={show.id}
-                                                            image={show.imageSet.verticalPoster.w240}
-                                                            />
-                                                    }
-                                                </Link>
-                                            </div>
-                                        );
-                                    }
-                                })                                }
-                            </ul>
-                        ) : <p>No shows found</p>
+                                                            /> :
+                                                            <MovieCardLarge
+                                                                key={show.id}
+                                                                image={show.imageSet.verticalPoster.w240} />
+                                                        }
+                                                    </Link>
+                                                </div>
+                                            );
+                                        }
+                                    })}
+                                </ul>
+                            ) : <p>No shows found</p>
                     ) : <p>Search for your favorite shows!</p>}
                 </InnerContainer>
-                <InnerContainer>
-                    <p>Vorige</p>
-                    <p onClick={fetchShows}>Volgende</p>
-                </InnerContainer>
+                {nextShows && (
+                    <InnerContainer classNameAdd="center">
+                        <button className={"searchButton moreShows"} onClick={fetchShows}>Get more shows!</button>
+                    </InnerContainer>
+                )}
             </OuterContainer>
         </>
     )
