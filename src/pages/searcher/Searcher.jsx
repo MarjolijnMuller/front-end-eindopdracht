@@ -27,10 +27,13 @@ function Searcher() {
     const [hasSearched, togglehasSearched] = useState(false)
     const [initialLoad, toggleInitialLoad] = useState(true);
     const [nextShows, setNextShows] = useState("");
+    const [keyword, setKeyword] = useState("");
+
     const {isMovie} = useContext(MovieContext);
     const {viewTiles} = useContext(ViewContext);
     const {selectedGenres} = useContext(GenreContext);
     const {selectedServices, services} = useContext(ServiceContext);
+
 
     useEffect(() => {
         async function getDutchServices() {
@@ -89,6 +92,7 @@ function Searcher() {
         toggleShowError(false);
         setShows([]);
         setAllShows([]);
+        console.log("keyword" + keyword);
         try {
             togglehasSearched(true);
             const result = await axios.get('https://streaming-availability.p.rapidapi.com/shows/search/filters', {
@@ -98,6 +102,8 @@ function Searcher() {
                     catalogs: `${selectedServices}`,
                     genres: `${selectedGenres}`,
                     show_type: `${isMovie}`,
+                    order_by: "rating",
+                    keyword: `${keyword}`,
                 },
                 headers: {
                     'x-rapidapi-key': '5b9c13ca93msh7d7c427331406c1p13d79fjsne76971a64dcc',
@@ -147,6 +153,8 @@ function Searcher() {
                     genres: `${selectedGenres}`,
                     show_type: `${isMovie}`,
                     cursor: `${nextShows}`,
+                    order_by: "rating",
+                    keyword: `${keyword}`,
                 },
                 headers: {
                     'x-rapidapi-key': '5b9c13ca93msh7d7c427331406c1p13d79fjsne76971a64dcc',
@@ -181,6 +189,11 @@ function Searcher() {
         } finally {
             toggleInitialLoad(false);
         }
+    }
+
+    function handleChange(e) {
+        setKeyword( e.target.value);
+        console.log(keyword);
     }
 
     return (
@@ -242,9 +255,16 @@ function Searcher() {
                     }
                 </InnerContainer>
                 <InnerContainer>
-                    <label id="keyword">
-                        Zoekwoord:
-                        <input type="text" id="inputKeyword"/>
+                    <label
+                        htmlFor="inputKeyword"
+                        id="keyword">
+                        Keyword:
+                        <input
+                            type="text"
+                            id="inputKeyword"
+                            name="inputKeyword"
+                            onChange={handleChange}
+                        />
                     </label>
 
 
