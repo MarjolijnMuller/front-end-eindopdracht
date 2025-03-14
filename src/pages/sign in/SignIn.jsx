@@ -5,6 +5,8 @@ import Navigation from "../../components/Navigation/Navigation.jsx";
 import InnerContainer from "../../components/InnerContainer/InnerContainer.jsx";
 import Button from "../../components/Button/Button.jsx";
 import {useState} from "react";
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 function SignIn() {
     const [formState, setFormState] = useState({
@@ -15,40 +17,55 @@ function SignIn() {
     })
     const [errorMessage, setErrorMessage] = useState("");
     const [success, toggleSuccess] = useState(false);
+    const navigate = useNavigate();
 
 
     function handleChange(event) {
         const changedFieldName = event.target.name;
         setFormState({
             ...formState,
-            changedFieldName: event.target.value,
+            [changedFieldName]: event.target.value, // Use brackets here
         });
     }
 
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    async function handleSubmit(e) {
+        e.preventDefault();
         setErrorMessage("");
         toggleSuccess(true);
+
         try {
-            /*const response = await axios.post (
-                //URL,
-                {
-                    email: formState.email,
-                    password: formState.password,
+            const response = await axios.post('https://api.datavortex.nl/moviesearcher/users',
+                JSON.stringify({
+                    "username": formState.username,
+                    "email": formState.email,
+                    "password": formState.password,
+                    "info": "testinfo",
+                    "authorities": [
+                        {
+                            "authority": "USER"
+                        }
+                    ]
+                }),{
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Api-Key': 'moviesearcher:QgUz498OFaHSAWqGjIvS'
+                    }
                 }
             );
-            console.log(response.data);*/
-            console.log("U wordt aangemeld")
+            console.log(response);
+            login(response.data.accessToken);
         } catch (e) {
-            console.error(e);
+            console.log(e);
             setErrorMessage("Er is iets fout gegaan! Probeer het opnieuw!");
+            console.log(errorMessage);
         }
+        navigate('/inloggen');
     }
 
     return (
         <>
-            <Navigation disabled={true}/>
+            <Navigation/>
 
             <TitleContainer title="Aanmelden"/>
 

@@ -2,46 +2,39 @@ import './LogIn.css'
 import TitleContainer from "../../components/TitleContainer/TitleContainer.jsx";
 import OuterContainer from "../../components/OuterContainer/OuterContainer.jsx";
 import Button from "../../components/Button/Button.jsx";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import Navigation from "../../components/Navigation/Navigation.jsx";
 import InnerContainer from "../../components/InnerContainer/InnerContainer.jsx";
+import {AuthContext} from "../../context/AuthContext.jsx";
+
 
 
 function logIn() {
+    const { login } = useContext(AuthContext);
     const [formState, setFormState] = useState({
         username: "",
         password: "",
     })
-    const [errorMessage, setErrorMessage] = useState("");
+    /*const [errorMessage, setErrorMessage] = useState("");*/
     const [success, toggleSuccess] = useState(false);
 
 
-    function handleChange(event) {
-        const changedFieldName = event.target.name;
+    function handleChange(e) {
+        const changedFieldName = e.target.name;
+
         setFormState({
             ...formState,
-            changedFieldName: event.target.value,
+            [changedFieldName]: e.target.value,
         });
     }
 
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        setErrorMessage("");
-        toggleSuccess(true);
+    async function handleSubmit(e) {
+        e.preventDefault();
         try {
-            /*const response = await axios.post (
-                //URL,
-                {
-                    email: formState.email,
-                    password: formState.password,
-                }
-            );
-            console.log(response.data);*/
-            console.log("U wordt ingelogd")
+            login();
         } catch (e) {
-            console.error(e);
-            setErrorMessage("Er is iets fout gegaan! Probeer het opnieuw!");
+            console.log(e);
         }
     }
 
