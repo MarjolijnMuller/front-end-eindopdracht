@@ -33,13 +33,14 @@ function SignIn() {
         e.preventDefault();
         setErrorMessage("");
         toggleSuccess(true);
+        console.log(formState);
 
         try {
             const response = await axios.post('https://api.datavortex.nl/moviesearcher/users',
                 {
-                    "username": "testuser",
-                    "email": "testuser@gmail.com",
-                    "password": "testpassword",
+                    "username": formState.username,
+                    "email": formState.email,
+                    "password": formState.password,
                     "info": "testinfo",
                     "authorities": [
                         {

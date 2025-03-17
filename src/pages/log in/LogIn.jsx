@@ -32,7 +32,7 @@ function logIn() {
     async function handleSubmit(e) {
         e.preventDefault();
         try {
-            login();
+            login(formState.username, formState.password);
         } catch (e) {
             console.log(e);
         }

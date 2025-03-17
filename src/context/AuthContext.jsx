@@ -38,8 +38,11 @@ function AuthContextProvider({children}) {
             const response = await axios.post(`https://api.datavortex.nl/moviesearcher/users/authenticate`, {
                 username,
                 password,
-            });
-            const token = response.data.token;
+            }, {headers: {
+                    'Content-Type': 'application/json',
+                    'X-Api-Key': 'moviesearcher:QgUz498OFaHSAWqGjIvS'
+                }});
+            const token = response.data.jwt;
             console.log(token);
             console.log(response);
 
