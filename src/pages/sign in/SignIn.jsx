@@ -36,17 +36,17 @@ function SignIn() {
 
         try {
             const response = await axios.post('https://api.datavortex.nl/moviesearcher/users',
-                JSON.stringify({
-                    "username": formState.username,
-                    "email": formState.email,
-                    "password": formState.password,
+                {
+                    "username": "testuser",
+                    "email": "testuser@gmail.com",
+                    "password": "testpassword",
                     "info": "testinfo",
                     "authorities": [
                         {
                             "authority": "USER"
                         }
                     ]
-                }),{
+                },{
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Api-Key': 'moviesearcher:QgUz498OFaHSAWqGjIvS'
@@ -54,13 +54,14 @@ function SignIn() {
                 }
             );
             console.log(response);
-            login(response.data.accessToken);
+            /*login(response.data.accessToken);*/
+            navigate('/inloggen');
         } catch (e) {
             console.log(e);
             setErrorMessage("Er is iets fout gegaan! Probeer het opnieuw!");
             console.log(errorMessage);
         }
-        navigate('/inloggen');
+
     }
 
     return (
@@ -121,7 +122,7 @@ function SignIn() {
                                     className={"AnnuleerButton"}
                                 />
                             </InnerContainer>
-                        </form> : <p>U bent ingelogd</p>}
+                        </form> : <p>...{/*U bent ingelogd*/}</p>}
                 </InnerContainer>
             </OuterContainer>
         </>

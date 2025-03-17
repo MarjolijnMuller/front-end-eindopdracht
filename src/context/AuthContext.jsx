@@ -16,10 +16,12 @@ function AuthContextProvider({children}) {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
+        console.log("Token AuthContext: " + token);
 
         if (token && isTokenValid(token)) {
             //log de gebruiker opnieuw in
             void login(token)
+            console.log("Token AuthContext (if): " + token)
         } else {
             setAuth({
                 isAuth: false,
@@ -29,20 +31,22 @@ function AuthContextProvider({children}) {
         }
     }, [])
 
-    async function login(token) {
-        localStorage.setItem('token', token);
+    async function login(username, password) {
 
-        const decodedToken = jwtDecode(token);
-        console.log(decodedToken);
 
         try {
             const response = await axios.post(`https://api.datavortex.nl/moviesearcher/users/authenticate`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                }
+                username,
+                password,
             });
+            const token = response.data.token;
+            console.log(token);
             console.log(response);
+
+            localStorage.setItem('token', token);
+
+            const decodedToken = jwtDecode(token);
+            console.log("AuthContext decodedToken: " + decodedToken);
 
             setAuth({
                 isAuth: true,
@@ -55,6 +59,9 @@ function AuthContextProvider({children}) {
                 status: 'done',
             });
 
+            console.log("Gebruiker is ingelogd");
+            navigate('/search');
+
         } catch (error) {
             console.log(error);
             setAuth({
@@ -63,8 +70,7 @@ function AuthContextProvider({children}) {
                 status: 'done',
             });
         }
-        console.log("Gebruiker is ingelogd");
-        navigate('/search');
+
     }
 
     function logout() {
