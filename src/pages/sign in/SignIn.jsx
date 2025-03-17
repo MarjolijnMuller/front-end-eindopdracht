@@ -5,6 +5,8 @@ import Navigation from "../../components/Navigation/Navigation.jsx";
 import InnerContainer from "../../components/InnerContainer/InnerContainer.jsx";
 import Button from "../../components/Button/Button.jsx";
 import {useState} from "react";
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 function SignIn() {
     const [formState, setFormState] = useState({
@@ -15,40 +17,57 @@ function SignIn() {
     })
     const [errorMessage, setErrorMessage] = useState("");
     const [success, toggleSuccess] = useState(false);
+    const navigate = useNavigate();
 
 
     function handleChange(event) {
         const changedFieldName = event.target.name;
         setFormState({
             ...formState,
-            changedFieldName: event.target.value,
+            [changedFieldName]: event.target.value, // Use brackets here
         });
     }
 
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    async function handleSubmit(e) {
+        e.preventDefault();
         setErrorMessage("");
         toggleSuccess(true);
+        console.log(formState);
+
         try {
-            /*const response = await axios.post (
-                //URL,
+            const response = await axios.post('https://api.datavortex.nl/moviesearcher/users',
                 {
-                    email: formState.email,
-                    password: formState.password,
+                    "username": formState.username,
+                    "email": formState.email,
+                    "password": formState.password,
+                    "info": "testinfo",
+                    "authorities": [
+                        {
+                            "authority": "USER"
+                        }
+                    ]
+                },{
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Api-Key': 'moviesearcher:QgUz498OFaHSAWqGjIvS'
+                    }
                 }
             );
-            console.log(response.data);*/
-            console.log("U wordt aangemeld")
+            console.log(response);
+            /*login(response.data.accessToken);*/
+            navigate('/inloggen');
         } catch (e) {
-            console.error(e);
+            console.log(e);
             setErrorMessage("Er is iets fout gegaan! Probeer het opnieuw!");
+            console.log(errorMessage);
         }
+
     }
 
     return (
         <>
-            <Navigation disabled={true}/>
+            <Navigation/>
 
             <TitleContainer title="Aanmelden"/>
 
@@ -104,7 +123,7 @@ function SignIn() {
                                     className={"AnnuleerButton"}
                                 />
                             </InnerContainer>
-                        </form> : <p>U bent ingelogd</p>}
+                        </form> : <p>...{/*U bent ingelogd*/}</p>}
                 </InnerContainer>
             </OuterContainer>
         </>

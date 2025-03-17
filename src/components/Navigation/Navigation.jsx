@@ -6,6 +6,7 @@ import {House, MagnifyingGlass, Star, UserCircle} from "@phosphor-icons/react";
 
 function Navigation(props) {
 
+
     return (
         <>
             <nav>
