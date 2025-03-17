@@ -1,0 +1,15 @@
+.logInNavigation{
+    margin-right: 1rem;
+    width: 8rem;
+    height: 2.5rem;
+    background: var(--accent-color);
+    font-size: 1rem;
+    border-radius: 12px;
+    font-weight: bold;
+    border: none;
+}
+
+.logInNavigation:hover{
+    background: var(--text-color);
+    color: var(--accent-color);
+}
