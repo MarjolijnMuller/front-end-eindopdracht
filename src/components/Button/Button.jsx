@@ -2,11 +2,13 @@ import React, {useContext, useState} from 'react';
 import './Button.css';
 import {useNavigate} from "react-router-dom";
 import {GenreContext} from "../../context/GenreContext.jsx";
+import {AuthContext} from "../../context/AuthContext.jsx";
 
 function Button(props) {
     let navigate = useNavigate();
     const {genres}= useContext(GenreContext);
     const [isClicked, setIsClicked] = useState(false);
+    const { logout } = useContext(AuthContext);
 
 
     const handleClick = () => {
@@ -22,6 +24,10 @@ function Button(props) {
                     break;
             }
         }
+        if (props.className === "logOutNavigation") {
+            console.log('Log uit');
+            logout();
+        }
         if(props.className === "genreButton") {
             genres(props.id);
             setIsClicked(!isClicked);
@@ -35,7 +41,6 @@ function Button(props) {
             type={props.type}
             className={`${props.className} ${isClicked ? 'clicked' : ''}`}
             onClick={handleClick}
-            disabled={props.disabled}
         >
             {props.name}
         </button>
