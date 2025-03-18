@@ -24,6 +24,7 @@ function MovieCardLarge(props) {
                     )}
                     <p>{props.rating}/100</p>
                     <StarButton/>
+                    movieId={props.showId}
                 </div>
             </div>
         </div>

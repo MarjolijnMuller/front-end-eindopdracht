@@ -1,12 +1,16 @@
 import './StarButton.css';
-import React from "react";
+import React, {useContext} from "react";
 import {Star} from "@phosphor-icons/react";
+import {FavoriteContext} from "../../context/FavoriteContext.jsx";
 
-function StarButton() {
+function StarButton(props) {
+    const {setFavoriteMovies} = useContext(FavoriteContext);
     const [star, setStar] = React.useState(false);
 
     function handleClick() {
         setStar(!star);
+        setFavoriteMovies(props.movieId);
+
     }
 
     return (

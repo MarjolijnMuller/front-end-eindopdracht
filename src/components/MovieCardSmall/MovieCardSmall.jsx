@@ -17,7 +17,8 @@ function MovieCardSmall(props) {
                 {selectedService && (
                     <p>{selectedService.service.name}</p>
                 )}
-                <StarButton/>
+                <StarButton
+                movieId={props.showId}/>
             </div>
         </div>
     )

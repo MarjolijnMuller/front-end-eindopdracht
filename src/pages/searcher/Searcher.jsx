@@ -313,13 +313,14 @@ function Searcher() {
                                                     <Link to={`/filmserie/${show.id}`}>
                                                         {viewTiles ?
                                                             <MovieCardSmall
-                                                                key={show.id}
+                                                                showId={show.id}
                                                                 image={show.imageSet.verticalPoster.w240}
-
                                                             /> :
                                                             <MovieCardLarge
-                                                                key={show.id}
-                                                                image={show.imageSet.verticalPoster.w240} />
+                                                                showId={show.id}
+                                                                image={show.imageSet.verticalPoster.w240}
+
+                                                            />
                                                         }
                                                     </Link>
                                                 </div>
