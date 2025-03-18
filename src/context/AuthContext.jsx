@@ -38,18 +38,21 @@ function AuthContextProvider({children}) {
             const response = await axios.post(`https://api.datavortex.nl/moviesearcher/users/authenticate`, {
                 username,
                 password,
-            }, {headers: {
+            }, {
+                headers: {
                     'Content-Type': 'application/json',
                     'X-Api-Key': 'moviesearcher:QgUz498OFaHSAWqGjIvS'
-                }});
+                }
+            });
             const token = response.data.jwt;
-/*            console.log(response);*/
+            /*            console.log(response);*/
 
             localStorage.setItem('token', token);
 
             const decodedToken = jwtDecode(token);
-/*            console.log(decodedToken);*/
-console.log("Before setAuth:", auth);
+            console.log("decoded Token")
+                        console.log(decodedToken);
+            console.log("Before setAuth:", auth);
             setAuth({
                 ...auth,
                 isAuth: true,

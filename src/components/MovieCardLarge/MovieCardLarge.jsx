@@ -1,7 +1,8 @@
 import './MovieCardLarge.css';
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import StarButton from "../starButton/StarButton.jsx";
 import {ServiceContext} from "../../context/ServiceContext.jsx";
+import {Link} from "react-router-dom";
 
 function MovieCardLarge(props) {
     const {selectedServices} = useContext(ServiceContext);
@@ -12,8 +13,9 @@ function MovieCardLarge(props) {
 
     return (
         <div className="movieCartLarge">
+            <Link to={`/filmserie/${props.showId}`}>
             <img src={props.image} className="moviePosterLarge"/>
-
+            </Link>
             <div className="wrapperMovieCart">
                 <h3>{props.title}</h3>
                 <p className="movieInfo">{props.information}</p>
@@ -23,7 +25,8 @@ function MovieCardLarge(props) {
                         <p>{selectedService.service.name}</p>
                     )}
                     <p>{props.rating}/100</p>
-                    <StarButton/>
+                    <StarButton showId={props.imdbId}/>
+
                 </div>
             </div>
         </div>
