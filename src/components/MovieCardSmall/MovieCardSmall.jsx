@@ -21,7 +21,7 @@ function MovieCardSmall(props) {
                     <p>{selectedService.service.name}</p>
                 )}
                 <StarButton
-                showId={props.showId}/>
+                showId={props.imdbId}/>
             </div>
         </div>
     )

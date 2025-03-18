@@ -1,18 +1,22 @@
 import './StarButton.css';
-import React, {useContext} from "react";
-import {Star} from "@phosphor-icons/react";
-import {FavoriteContext} from "../../context/FavoriteContext.jsx";
+import React, { useContext, useEffect, useState } from "react";
+import { Star } from "@phosphor-icons/react";
+import { FavoriteContext } from "../../context/FavoriteContext.jsx";
 
 function StarButton(props) {
-    const {setFavoriteMovies} = useContext(FavoriteContext);
-    const [star, setStar] = React.useState(false);
+    const { favorites, setFavoriteMovies } = useContext(FavoriteContext);
+    const [star, setStar] = useState(false);
+
+    useEffect(() => {
+        console.log("Favorites:", favorites, "ShowId:", props.showId);
+        if(favorites.includes(props.showId)){
+            setStar(true);
+        }
+    }, [favorites, props.showId]);
 
     function handleClick(event) {
         event.stopPropagation();
-        setStar(!star);
         setFavoriteMovies(props.showId);
-        console.log("movieId: " + props.showId);
-
     }
 
     return (
@@ -21,10 +25,9 @@ function StarButton(props) {
             className="starButton"
             onClick={handleClick}
         >
-            <Star size={30} weight={star ? "fill" : "regular"}
-            className="star"/>
+            <Star size={30} weight={star ? "fill" : "regular"} className="star" />
         </button>
-    )
+    );
 }
 
 export default StarButton;

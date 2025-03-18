@@ -25,7 +25,7 @@ function MovieCardLarge(props) {
                         <p>{selectedService.service.name}</p>
                     )}
                     <p>{props.rating}/100</p>
-                    <StarButton showId={props.showId}/>
+                    <StarButton showId={props.imdbId}/>
 
                 </div>
             </div>

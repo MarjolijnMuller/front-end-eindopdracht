@@ -296,6 +296,7 @@ function Searcher() {
                                                                 image={show.imageSet.verticalPoster.w240}
                                                                 service={show.streamingOptions.nl}
                                                                 showId={show.id}
+                                                                imdbId={show.imdbId}
                                                             /> :
                                                             <MovieCardLarge
                                                                 key={show.id}
@@ -305,6 +306,7 @@ function Searcher() {
                                                                 rating={show.rating}
                                                                 service={show.streamingOptions.nl}
                                                                 showId={show.id}
+                                                                imdbId={show.imdbId}
                                                             />
                                                         }
 
@@ -318,11 +320,12 @@ function Searcher() {
                                                             <MovieCardSmall
                                                                 showId={show.id}
                                                                 image={show.imageSet.verticalPoster.w240}
+                                                                imdbId={show.imdbId}
                                                             /> :
                                                             <MovieCardLarge
                                                                 showId={show.id}
                                                                 image={show.imageSet.verticalPoster.w240}
-
+                                                                imdbId={show.imdbId}
                                                             />
                                                         }
                                                     </Link>
