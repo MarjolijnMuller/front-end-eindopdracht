@@ -289,12 +289,13 @@ function Searcher() {
 
                                             return (
                                                 <div key={show.id}>
-                                                    <Link to={`/filmserie/${show.id}`}>
+
                                                         {viewTiles ?
                                                             <MovieCardSmall
                                                                 key={show.id}
                                                                 image={show.imageSet.verticalPoster.w240}
                                                                 service={show.streamingOptions.nl}
+                                                                showId={show.id}
                                                             /> :
                                                             <MovieCardLarge
                                                                 key={show.id}
@@ -302,9 +303,11 @@ function Searcher() {
                                                                 title={show.originalTitle}
                                                                 information={show.overview}
                                                                 rating={show.rating}
-                                                                service={show.streamingOptions.nl}/>
+                                                                service={show.streamingOptions.nl}
+                                                                showId={show.id}
+                                                            />
                                                         }
-                                                    </Link>
+
                                                 </div>
                                             );
                                         } else {

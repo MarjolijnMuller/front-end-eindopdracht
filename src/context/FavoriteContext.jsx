@@ -6,30 +6,28 @@ import {jwtDecode} from "jwt-decode";
 export const FavoriteContext = createContext({});
 
 function FavoriteContextProvider({children}) {
-    const [favorites, setFavorites] = React.useState("");
+    const [favorites, setFavorites] = React.useState([]);
 
-    async function setFavoriteMovies(newFavorite) {
-        const token = localStorage.getItem('token');
-        const decodedToken = jwtDecode(token);
 
-        try {
-            const response = await axios.put(
-                `http://localhost:3000/600/users/${decodedToken.sub}`,
-                {
-                    "info": newFavorite,
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            console.log(response.data);
-
-        } catch (e) {
-            console.log(e);
+    function genres(genre) {
+        if (selectedGenres.includes(genre)) {
+            setSelectedGenres(selectedGenres.filter((g) => g !== genre));
+        } else {
+            setSelectedGenres([...selectedGenres, genre]);
         }
+    }
+
+
+
+     function setFavoriteMovies(newFavorite) {
+         if (favorites.includes(newFavorite)) {
+             setFavorites(favorites.filter((f) => f !== newFavorite));
+         } else {
+             setFavorites([...favorites, newFavorite]);
+         }
+         console.log('favorieten');
+         console.log(favorites);
+        localStorage.setItem('favorieten', JSON.stringify(favorites));
     }
 
     const contextData = {

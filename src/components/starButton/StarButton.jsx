@@ -7,9 +7,11 @@ function StarButton(props) {
     const {setFavoriteMovies} = useContext(FavoriteContext);
     const [star, setStar] = React.useState(false);
 
-    function handleClick() {
+    function handleClick(event) {
+        event.stopPropagation();
         setStar(!star);
-        setFavoriteMovies(props.movieId);
+        setFavoriteMovies(props.showId);
+        console.log("movieId: " + props.showId);
 
     }
 

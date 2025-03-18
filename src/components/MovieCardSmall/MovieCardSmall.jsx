@@ -2,6 +2,7 @@ import './MovieCardSmall.css';
 import React, {useContext} from "react";
 import StarButton from "../starButton/StarButton.jsx";
 import {ServiceContext} from "../../context/ServiceContext.jsx";
+import {Link} from "react-router-dom";
 
 function MovieCardSmall(props) {
     const {selectedServices} = useContext(ServiceContext);
@@ -12,13 +13,15 @@ function MovieCardSmall(props) {
 
     return (
         <div className="movieCardSmall">
+            <Link to={`/filmserie/${props.showId}`}>
             <img src={props.image} className="moviePosterSmall"/>
+            </Link>
             <div className="wrapperMovieCardSmall">
                 {selectedService && (
                     <p>{selectedService.service.name}</p>
                 )}
                 <StarButton
-                movieId={props.showId}/>
+                showId={props.showId}/>
             </div>
         </div>
     )

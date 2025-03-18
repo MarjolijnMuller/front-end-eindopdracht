@@ -65,7 +65,8 @@ function Filmpage() {
                             <div className="movieStats">
                                 <p>{show.runtime} minutes | Year of release: {show.releaseYear}</p>
                                 <p>Average rating: {show.rating}/100</p>
-                                <StarButton/>
+                                <StarButton
+                                showId={show.id}/>
                             </div>
 
                             <p>{show.overview}</p>
