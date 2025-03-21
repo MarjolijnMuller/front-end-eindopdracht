@@ -13,10 +13,13 @@ function AuthContextProvider({children}) {
         status: 'pending',
     });
     const [authorized, toggleAuthorized] = useState(false);
+    const [username, setUsername] = useState("");
+    const [token, setToken] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
+        setToken(token);
 
         if (token && isTokenValid(token)) {
             void login(token)
@@ -45,7 +48,7 @@ function AuthContextProvider({children}) {
                 }
             });
             const token = response.data.jwt;
-            /*            console.log(response);*/
+            setToken(token);
 
             localStorage.setItem('token', token);
 
@@ -63,6 +66,7 @@ function AuthContextProvider({children}) {
                 },
                 status: 'done',
             });
+            setUsername(decodedToken.sub);
             toggleAuthorized(true);
             console.log("After setAuth:", auth);
             console.log("Gebruiker is ingelogd");
@@ -75,7 +79,9 @@ function AuthContextProvider({children}) {
                 user: null,
                 status: 'done',
             });
+            setUsername("");
             toggleAuthorized(false);
+            setToken("");
         }
         console.log(auth);
     }
@@ -88,7 +94,9 @@ function AuthContextProvider({children}) {
             user: null,
             status: 'done'
         });
+        setUsername("");
         toggleAuthorized(false);
+        setToken("")
         console.log(auth);
         navigate('/');
     }
@@ -98,6 +106,8 @@ function AuthContextProvider({children}) {
         authorized,
         login: login,
         logout: logout,
+        username,
+        token,
     };
 
     return (

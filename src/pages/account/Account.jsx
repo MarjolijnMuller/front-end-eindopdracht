@@ -1,52 +1,57 @@
-import './Account.css'
+import './Account.css';
 import Navigation from "../../components/Navigation/Navigation.jsx";
 import TitleContainer from "../../components/TitleContainer/TitleContainer.jsx";
 import OuterContainer from "../../components/OuterContainer/OuterContainer.jsx";
-import Button from "../../components/Button/Button.jsx";
 import InnerContainer from "../../components/InnerContainer/InnerContainer.jsx";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../context/AuthContext.jsx";
+import axios from "axios";
 
 function Account() {
+    const { username, token } = useContext(AuthContext);
+    const [user, setUser] = useState([]);
+
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const response = await axios.get(
+                    `https://api.datavortex.nl/moviesearcher/users/${username}`,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Api-Key': 'moviesearcher:QgUz498OFaHSAWqGjIvS',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                console.log(response.data);
+                setUser(response.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        fetchUser();
+    }, [username, token]);
+
     return (
         <>
-            <Navigation/>
+            <Navigation />
 
-            <TitleContainer title="Mijn account"/>
+            <TitleContainer title="Mijn account" />
 
             <OuterContainer>
                 <InnerContainer classNameAdd="center">
-                    <form onSubmit={(e) => e.preventDefault()}>
+                    <div className="userData">
+                        <p>Gebruikersnaam: <strong>{user.username}</strong></p>
 
-                        <label htmlFor="username" className="accountInfo">
-                            <p>Gebruikersnaam:</p>
-
-                            <input type="text" placeholder="Gebruikersnaam wijzigen" className="accountInput"/>
-                        </label>
-
-                        <label htmlFor="mail" className="accountInfo">
-                            <p>EmailAdres:</p>
-                        </label>
-
-                        <label htmlFor="password" className="accountInfo accountPassword">
-                            <p>Wachtwoord wijzigen:</p>
-                            <input type="text" placeholder="Nieuw wachtwoord" className="accountInput"/>
-                            <input type="text" placeholder="Nieuw wachtwoord herhalen" className="accountInput"/>
-                        </label>
-
-                    </form>
+                        <p>EmailAdres: <strong>{user.email}</strong></p>
+                    </div>
                 </InnerContainer>
-
-                <InnerContainer classNameAdd="center">
-                    <Button type="submit"
-                            className="SubmitButton"
-                            name="Opslaan"/>
-                    <Button type="button"
-                            className="AnnuleerButton"
-                            name="Annuleren"/>
-                </InnerContainer>
-
             </OuterContainer>
         </>
-    )
+    );
 }
 
 export default Account;
