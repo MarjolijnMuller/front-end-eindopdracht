@@ -28,7 +28,7 @@ function Filmpage() {
                         output_language: 'en',
                     },
                     headers: {
-                        'x-rapidapi-key': '5b9c13ca93msh7d7c427331406c1p13d79fjsne76971a64dcc',
+                        'x-rapidapi-key': import.meta.env.X_RAPIDAPI_KEY,
                         'x-rapidapi-host': 'streaming-availability.p.rapidapi.com'
                     }
                 });

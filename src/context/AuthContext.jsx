@@ -1,12 +1,12 @@
-import {createContext, useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import { createContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import isTokenValid from "../helpers/isTokenValid";
 import axios from "axios";
 
 export const AuthContext = createContext({});
 
-function AuthContextProvider({children}) {
+function AuthContextProvider({ children }) {
     const [auth, setAuth] = useState({
         isAuth: false,
         user: null,
@@ -18,11 +18,11 @@ function AuthContextProvider({children}) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        setToken(token);
+        const storedToken = localStorage.getItem('token');
+        setToken(storedToken);
 
-        if (token && isTokenValid(token)) {
-            void login(token)
+        if (storedToken && isTokenValid(storedToken)) {
+            fetchUserData(storedToken);
         } else {
             setAuth({
                 isAuth: false,
@@ -30,32 +30,15 @@ function AuthContextProvider({children}) {
                 status: 'done'
             });
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
         console.log("Auth state changed:", auth);
     }, [auth]);
 
-    async function login(username, password) {
+    async function fetchUserData(jwtToken) {
         try {
-            const response = await axios.post(`https://api.datavortex.nl/moviesearcher/users/authenticate`, {
-                username,
-                password,
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Api-Key': 'moviesearcher:QgUz498OFaHSAWqGjIvS'
-                }
-            });
-            const token = response.data.jwt;
-            setToken(token);
-
-            localStorage.setItem('token', token);
-
-            const decodedToken = jwtDecode(token);
-            console.log("decoded Token")
-                        console.log(decodedToken);
-            console.log("Before setAuth:", auth);
+            const decodedToken = jwtDecode(jwtToken);
             setAuth({
                 ...auth,
                 isAuth: true,
@@ -68,12 +51,8 @@ function AuthContextProvider({children}) {
             });
             setUsername(decodedToken.sub);
             toggleAuthorized(true);
-            console.log("After setAuth:", auth);
-            console.log("Gebruiker is ingelogd");
-            navigate('/search');
-
         } catch (error) {
-            console.log(error);
+            console.error('Error fetching user data:', error);
             setAuth({
                 isAuth: false,
                 user: null,
@@ -83,7 +62,40 @@ function AuthContextProvider({children}) {
             toggleAuthorized(false);
             setToken("");
         }
-        console.log(auth);
+    }
+
+    async function login(username, password) {
+        try {
+            const response = await axios.post(
+                `https://api.datavortex.nl/moviesearcher/users/authenticate`,
+                {
+                    username,
+                    password,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Api-Key': import.meta.env.X_API_KEY,
+                    },
+                }
+            );
+            const newToken = response.data.jwt;
+            setToken(newToken);
+            localStorage.setItem('token', newToken);
+
+            fetchUserData(newToken);
+            navigate('/search');
+        } catch (error) {
+            console.error('Login error:', error);
+            setAuth({
+                isAuth: false,
+                user: null,
+                status: 'done',
+            });
+            setUsername("");
+            toggleAuthorized(false);
+            setToken("");
+        }
     }
 
     function logout() {
@@ -92,12 +104,12 @@ function AuthContextProvider({children}) {
             ...auth,
             isAuth: false,
             user: null,
-            status: 'done'
+            status: 'done',
         });
         setUsername("");
         toggleAuthorized(false);
-        setToken("")
-        console.log(auth);
+        setToken("");
+        localStorage.removeItem('token');
         navigate('/');
     }
 
@@ -112,12 +124,9 @@ function AuthContextProvider({children}) {
 
     return (
         <AuthContext.Provider value={contextData}>
-            {auth.status === 'done'
-                ? children
-                : <p>Loading...</p>
-            }
+            {auth.status === 'done' ? children : <p>Loading...</p>}
         </AuthContext.Provider>
-    )
+    );
 }
 
 export default AuthContextProvider;

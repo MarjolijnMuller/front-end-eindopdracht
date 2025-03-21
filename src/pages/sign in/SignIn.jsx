@@ -50,7 +50,7 @@ function SignIn() {
                 },{
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Api-Key': 'moviesearcher:QgUz498OFaHSAWqGjIvS'
+                        'X-Api-Key': import.meta.env.X_API_KEY
                     }
                 }
             );
