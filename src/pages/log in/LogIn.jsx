@@ -1,23 +1,22 @@
-import './LogIn.css'
+import './LogIn.css';
 import TitleContainer from "../../components/TitleContainer/TitleContainer.jsx";
 import OuterContainer from "../../components/OuterContainer/OuterContainer.jsx";
 import Button from "../../components/Button/Button.jsx";
-import {useContext, useState} from "react";
+import { useContext, useState } from "react";
 import Navigation from "../../components/Navigation/Navigation.jsx";
 import InnerContainer from "../../components/InnerContainer/InnerContainer.jsx";
-import {AuthContext} from "../../context/AuthContext.jsx";
+import { AuthContext } from "../../context/AuthContext.jsx";
+import { useNavigate } from 'react-router-dom';
 
-
-
-function logIn() {
+function LogIn() {
     const { login } = useContext(AuthContext);
     const [formState, setFormState] = useState({
         username: "",
         password: "",
-    })
-    /*const [errorMessage, setErrorMessage] = useState("");*/
+    });
+    const [errorMessage, setErrorMessage] = useState("");
     const [success, toggleSuccess] = useState(false);
-
+    const navigate = useNavigate();
 
     function handleChange(e) {
         const changedFieldName = e.target.name;
@@ -28,26 +27,34 @@ function logIn() {
         });
     }
 
-
     async function handleSubmit(e) {
         e.preventDefault();
         try {
-            login(formState.username, formState.password);
-        } catch (e) {
-            console.log(e);
+            await login(formState.username, formState.password);
+        } catch (error) {
+            console.error(error);
+            if (error.response && error.response.status === 401) {
+                setErrorMessage("Incorrect password. Please try again.");
+            } else if (error.response && error.response.status === 400) {
+                setErrorMessage(
+                    <>
+                        Username not found. <span className="link" onClick={() => navigate('/aanmelden')}>Sign up here</span>.
+                    </>
+                );
+            } else {
+                setErrorMessage("Something went wrong. Please try again.");
+            }
         }
     }
 
-
     return (
         <>
-            <Navigation/>
-            <TitleContainer title="Inloggen"/>
-
+            <Navigation />
+            <TitleContainer title="Inloggen" />
 
             <OuterContainer>
                 <InnerContainer classNameAdd="center">
-                    {!success ?
+                    {!success ? (
                         <form onSubmit={handleSubmit}>
                             <label htmlFor="inlog-username" className="logIn">
                                 Gebruikersnaam:
@@ -67,18 +74,17 @@ function logIn() {
                                     className="logInInput"
                                 />
                             </label>
-                            <Button
-                                type={"submit"}
-                                name={"Inloggen"}
-                                className={"SubmitButton"}
-                            />
-                        </form> : <p>U bent ingelogd</p>}
+                            <Button type={"submit"} name={"Inloggen"} className={"SubmitButton"} />
+                            {errorMessage && <p className="error">{errorMessage}</p>}
+                        </form>
+                    ) : (
+                        <p>U bent ingelogd</p>
+                    )}
                 </InnerContainer>
+                {console.log(errorMessage)}
             </OuterContainer>
         </>
-    )
+    );
 }
 
-
-export default logIn;
-
+export default LogIn;

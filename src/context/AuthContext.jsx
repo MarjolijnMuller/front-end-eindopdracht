@@ -39,6 +39,7 @@ function AuthContextProvider({ children }) {
     async function fetchUserData(jwtToken) {
         try {
             const decodedToken = jwtDecode(jwtToken);
+            console.log(jwtToken)
             setAuth({
                 ...auth,
                 isAuth: true,
@@ -84,6 +85,8 @@ function AuthContextProvider({ children }) {
             localStorage.setItem('token', newToken);
 
             fetchUserData(newToken);
+            console.log("newToken")
+            console.log(newToken)
             navigate('/search');
         } catch (error) {
             console.error('Login error:', error);
@@ -95,6 +98,9 @@ function AuthContextProvider({ children }) {
             setUsername("");
             toggleAuthorized(false);
             setToken("");
+
+            console.error("Login error in AuthContext:", error);
+            throw error;
         }
     }
 
