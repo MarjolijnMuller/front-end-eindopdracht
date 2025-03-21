@@ -14,9 +14,8 @@ function Button(props) {
     const handleClick = () => {
         if(props.navigate){
             switch (props.className) {
-                case 'logInNavigation':
-                    console.log('Navigating to /inloggen');
-                    navigate('/inloggen');
+                case 'AnnuleerButton':
+                    navigate('/');
                     break;
                 case 'signInHome':
                     console.log('Navigating to /aanmelden');
@@ -32,6 +31,7 @@ function Button(props) {
             genres(props.id);
             setIsClicked(!isClicked);
         }
+
 
 
     };

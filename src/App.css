@@ -34,4 +34,8 @@ a:visited {
   color: var(--text-color);
 }
 
+.error {
+  color: red;
+}
+
 /*-------------3. Areas-------------*/
