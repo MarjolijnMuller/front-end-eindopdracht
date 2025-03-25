@@ -14,17 +14,19 @@ import {ViewContext} from "../../context/ViewContext.jsx";
 import MovieCardLarge from "../../components/MovieCardLarge/MovieCardLarge.jsx";
 import {GenreContext} from "../../context/GenreContext.jsx";
 import {ServiceContext} from "../../context/ServiceContext.jsx";
+import Footer from "../../components/Footer/Footer.jsx";
 
 function Searcher() {
     const [dutchServices, setDutchServices] = useState([]);
     const [genres, setGenres] = useState([]);
     const [shows, setShows] = useState([]);
     const [allShows, setAllShows] = useState([]);
-    const [loading, toggleLoading] = useState(false)
+    const [loadingServices, setLoadingServices] = useState(false);
+    const [loadingGenres, setLoadingGenres] = useState(false);
     const [serviceError, toggleServiceError] = useState(false);
     const [genreError, toggleGenreError] = useState(false);
     const [showError, toggleShowError] = useState(false);
-    const [hasSearched, togglehasSearched] = useState(false)
+    const [hasSearched, togglehasSearched] = useState(false);
     const [initialLoad, toggleInitialLoad] = useState(true);
     const [nextShows, setNextShows] = useState("");
     const [keyword, setKeyword] = useState("");
@@ -34,10 +36,16 @@ function Searcher() {
     const {selectedGenres} = useContext(GenreContext);
     const {selectedServices, services} = useContext(ServiceContext);
 
+    const handleServiceChange = (serviceId) => {
+        services(serviceId);
+    };
 
     useEffect(() => {
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
         async function getDutchServices() {
-            toggleLoading(true);
+            setLoadingServices(true);
             toggleServiceError(false);
             togglehasSearched(false);
             try {
@@ -46,21 +54,26 @@ function Searcher() {
                         output_language: 'en'
                     },
                     headers: {
-                        'x-rapidapi-key': '5b9c13ca93msh7d7c427331406c1p13d79fjsne76971a64dcc',
+                        'x-rapidapi-key': import.meta.env.X_RAPIDAPI_KEY,
                         'x-rapidapi-host': 'streaming-availability.p.rapidapi.com'
-                    }
+                    },
+                    signal: signal,
                 });
-                toggleLoading(false);
-                console.log(result.data.nl.services);
+                setLoadingServices(false);
                 setDutchServices(result.data.nl.services);
             } catch (error) {
-                console.error(error);
-                toggleServiceError(true);
+                if (axios.isCancel(error)) {
+                    console.error('Verzoek geannuleerd', error.message);
+                } else {
+                    console.error(error);
+                    toggleServiceError(true);
+                    setLoadingServices(false);
+                }
             }
         }
 
         async function getGenres() {
-            toggleLoading(true);
+            setLoadingGenres(true);
             toggleGenreError(false);
             try {
                 const result = await axios.get('https://streaming-availability.p.rapidapi.com/genres', {
@@ -69,30 +82,37 @@ function Searcher() {
                         country: 'nl',
                     },
                     headers: {
-                        'x-rapidapi-key': '5b9c13ca93msh7d7c427331406c1p13d79fjsne76971a64dcc',
+                        'x-rapidapi-key': import.meta.env.X_RAPIDAPI_KEY,
                         'x-rapidapi-host': 'streaming-availability.p.rapidapi.com'
-                    }
+                    },
+                    signal: signal,
                 });
-                toggleLoading(false);
-                console.log(result.data);
+                setLoadingGenres(false);
                 setGenres(result.data);
             } catch (error) {
-                console.error(error);
-                toggleGenreError(true);
+                if (axios.isCancel(error)) {
+                    console.error('Verzoek geannuleerd', error.message);
+                } else {
+                    console.error(error);
+                    toggleGenreError(true);
+                    setLoadingGenres(false);
+                }
             }
         }
 
-        getDutchServices()
-        getGenres()
-    }, []);
+        getDutchServices();
+        getGenres();
 
+        return () => {
+            abortController.abort();
+        };
+    }, []);
 
     async function fetchShows() {
         togglehasSearched(false);
         toggleShowError(false);
         setShows([]);
         setAllShows([]);
-        console.log("keyword" + keyword);
         try {
             togglehasSearched(true);
             const result = await axios.get('https://streaming-availability.p.rapidapi.com/shows/search/filters', {
@@ -106,28 +126,25 @@ function Searcher() {
                     keyword: `${keyword}`,
                 },
                 headers: {
-                    'x-rapidapi-key': '5b9c13ca93msh7d7c427331406c1p13d79fjsne76971a64dcc',
+                    'x-rapidapi-key': import.meta.env.X_RAPIDAPI_KEY,
                     'x-rapidapi-host': 'streaming-availability.p.rapidapi.com'
                 }
             });
-            console.log(result.data);
             setShows(result.data.shows);
             if (result.data && result.data.shows) {
                 if (nextShows) {
-                    // Append new shows to existing shows
-                    setAllShows(prevShows => [...prevShows, ...result.data.shows]); //Update shows state
+                    setAllShows(prevShows => [...prevShows, ...result.data.shows]);
                 } else {
-                    // Initial fetch, replace existing shows
-                    setAllShows(result.data.shows); //Update shows state
+                    setAllShows(result.data.shows);
                 }
 
                 if (result.data.hasMore) {
                     setNextShows(result.data.nextCursor);
                 } else {
-                    setNextShows(null); // No more shows to load
+                    setNextShows(null);
                 }
             } else {
-                console.error("Invalid data received from API:", result.data);
+                console.error("Ongeldige data ontvangen van API:", result.data);
                 toggleShowError(true);
                 setAllShows([]);
             }
@@ -157,28 +174,25 @@ function Searcher() {
                     keyword: `${keyword}`,
                 },
                 headers: {
-                    'x-rapidapi-key': '5b9c13ca93msh7d7c427331406c1p13d79fjsne76971a64dcc',
+                    'x-rapidapi-key': import.meta.env.X_RAPIDAPI_KEY,
                     'x-rapidapi-host': 'streaming-availability.p.rapidapi.com'
                 }
             });
-            console.log(result.data);
             setShows(result.data.shows);
             if (result.data && result.data.shows) {
                 if (nextShows) {
-                    // Append new shows to existing shows
-                    setAllShows(prevShows => [...prevShows, ...result.data.shows]); //Update shows state
+                    setAllShows(prevShows => [...prevShows, ...result.data.shows]);
                 } else {
-                    // Initial fetch, replace existing shows
-                    setAllShows(result.data.shows); //Update shows state
+                    setAllShows(result.data.shows);
                 }
 
                 if (result.data.hasMore) {
                     setNextShows(result.data.nextCursor);
                 } else {
-                    setNextShows(null); // No more shows to load
+                    setNextShows(null);
                 }
             } else {
-                console.error("Invalid data received from API:", result.data);
+                console.error("Ongeldige data ontvangen van API:", result.data);
                 toggleShowError(true);
                 setAllShows([]);
             }
@@ -192,99 +206,94 @@ function Searcher() {
     }
 
     function handleChange(e) {
-        setKeyword( e.target.value);
-        console.log(keyword);
+        setKeyword(e.target.value);
     }
 
     return (
         <>
             <Navigation/>
+            <main>
+                <TitleContainer title='Zoeken'/>
 
-            <TitleContainer title='Zoeken'/>
+                <OuterContainer>
 
-            <OuterContainer>
-
-                <InnerContainer>
-                    <ToggleSwitch
-                        className={"toggleSwitchMovie"}
-                        firstTerm={"Films"}
-                        secondTerm={"Series"}
-                    />
-                </InnerContainer>
-                <h2>Streamingdiensten</h2>
-                <InnerContainer>
-                    {loading && <p>Loading...</p>}
-                    {serviceError && <p>Something went wrong. Try again!</p>}
-                    {!loading && !serviceError && (
-                        <>
-                            {dutchServices.map((service) => {
-                                    return (
-
-                                        <label className="service" key={service.id} >
-                                            <input
-                                                type="checkbox"
-                                                className="checkboxService"
-                                                onClick={() => services(service.id)}
-                                            />
-                                            <p>{service.name}</p>
-                                        </label>
-
-                                    )
-                                }
-                            )}</>
+                    <InnerContainer>
+                        <ToggleSwitch
+                            className={"toggleSwitchMovie"}
+                            firstTerm={"Films"}
+                            secondTerm={"Series"}
+                        />
+                    </InnerContainer>
+                    <h2>Streamingdiensten</h2>
+                    <InnerContainer>
+                        {loadingServices && <p>Laden...</p>}
+                        {serviceError && <p className="error">Er is iets fout gegaan. Probeer het opnieuw!</p>}
+                        {!loadingServices && !serviceError && (
+                            <>
+                                {dutchServices.map((service) => (
+                                <label className="service" key={service.id}>
+                                    <input
+                                        type="checkbox"
+                                        className="checkboxService"
+                                        checked={selectedServices.includes(service.id)}
+                                        onChange={() => handleServiceChange(service.id)}
+                                    />
+                                    <p>{service.name}</p>
+                                </label>
+                            ))}</>
                     )
                     }
                 </InnerContainer>
                 <h2>Genres</h2>
                 <InnerContainer>
-                    {loading && <p>Loading...</p>}
-                    {genreError && <p>Something went wrong. Try again!</p>}
-                    {!loading && !genreError && (
+                    {loadingGenres && <p>Laden...</p>}
+                    {genreError && <p className="error">Oeps... Er ging iets mis. Probeer het opnieuw!</p>}
+                    {!loadingGenres && !genreError && (
                         <ul className="allGenreButtons">
-                            {genres.map((genre) => {
-                                return (
-                                    <Button key={genre.id}
-                                            type={"button"}
-                                            className={"genreButton"}
-                                            name={genre.name}
-                                            id={genre.id}/>
-                                )
-                            })}
-                        </ul>
-                    )
-                    }
-                </InnerContainer>
-                <InnerContainer>
-                    <label
-                        htmlFor="inputKeyword"
-                        id="keyword">
-                        Keyword:
-                        <input
-                            type="text"
-                            id="inputKeyword"
-                            name="inputKeyword"
-                            onChange={handleChange}
-                        />
-                    </label>
+                    {genres.map((genre) => {
+                        return (
+                        <Button key={genre.id}
+                    type={"button"}
+                    className={"genreButton"}
+                    name={genre.name}
+                    id={genre.id}/>
+                )
+                })}
+            </ul>
+            )
+            }
+        </InnerContainer>
+    <InnerContainer>
+        <label
+            htmlFor="inputKeyword"
+            id="keyword">
+            Keyword:
+            <input
+                type="text"
+                id="inputKeyword"
+                name="inputKeyword"
+                onChange={handleChange}
+            />
+        </label>
 
 
-                    <button type="button" className="searchButton" onClick={fetchShows}>
-                        Zoeken
-                    </button>
-                </InnerContainer>
-            </OuterContainer>
+        <button type="button" className="searchButton" onClick={fetchShows}>
+            Zoeken
+        </button>
+    </InnerContainer>
+</OuterContainer>
 
-            <OuterContainer>
-                <ToggleSwitch
-                    className={"toggleSwitchView"}/>
+    <OuterContainer>
+        <ToggleSwitch
+            className={"toggleSwitchView"}/>
 
-                <InnerContainer>
-                    {showError && <p>Something went wrong. Try again!</p>}
+        <InnerContainer>
+                    {showError && <p className="error">Oeps... Er ging iets mis. Probeer het opnieuw!</p>}
                     {hasSearched ? (
-                        initialLoad ? <p>Loading...</p> :
-                            allShows.length > 0 ? ( // Use allShows here
+                        initialLoad ? <p>Laden...</p> :
+                            allShows.length > 0 ? (
                                 <ul className="movieCards">
-                                    {allShows.map((show) => { // Map over allShows
+                                    {allShows.map((show) => {
                                         if (show.streamingOptions && show.streamingOptions.nl && show.streamingOptions.nl.length > 0) {
 
                                             return (
@@ -334,15 +343,17 @@ function Searcher() {
                                         }
                                     })}
                                 </ul>
-                            ) : <p>No shows found</p>
-                    ) : <p>Search for your favorite shows!</p>}
+                            ) : <p>Er zijn geen shows gevonden</p>
+                    ) : <p>Zoek je favoriete shows!</p>}
                 </InnerContainer>
                 {nextShows && (
                     <InnerContainer classNameAdd="center">
-                        <button className={"searchButton moreShows"} onClick={fetchNextShows}>Get more shows!</button>
+                        <button className={"searchButton moreShows"} onClick={fetchNextShows}>Meer shows!</button>
                     </InnerContainer>
                 )}
             </OuterContainer>
+            </main>
+            <Footer/>
         </>
     )
 

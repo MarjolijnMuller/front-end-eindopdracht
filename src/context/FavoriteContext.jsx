@@ -1,16 +1,21 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useContext } from "react";
+import { AuthContext } from "./AuthContext";
 
 export const FavoriteContext = createContext({});
 
 function FavoriteContextProvider({ children }) {
+    const { username } = useContext(AuthContext);
+
     const [favorites, setFavorites] = useState([]);
 
     useEffect(() => {
-        const storedFavorites = localStorage.getItem("favorites");
-        if (storedFavorites) {
-            setFavorites(JSON.parse(storedFavorites));
+        if (username) {
+            const storedFavorites = localStorage.getItem(`favorites_${username}`);
+            if (storedFavorites) {
+                setFavorites(JSON.parse(storedFavorites));
+            }
         }
-    }, []);
+    }, [username]);
 
     function setFavoriteMovies(newFavorite) {
         setFavorites(prevFavorites => {
@@ -18,10 +23,10 @@ function FavoriteContextProvider({ children }) {
                 ? prevFavorites.filter((f) => f !== newFavorite)
                 : [...prevFavorites, newFavorite];
 
-            localStorage.setItem('favorites', JSON.stringify(updatedFavorites)); // Correctie: Zet de key goed.
-            console.log('favorieten');
-            console.log(updatedFavorites);
-            console.log(localStorage.getItem("favorites"));
+            if (username) {
+                localStorage.setItem(`favorites_${username}`, JSON.stringify(updatedFavorites));
+            }
+
             return updatedFavorites;
         });
     }

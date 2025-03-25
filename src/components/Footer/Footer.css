@@ -1,28 +1,24 @@
-nav {
+footer {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    height: 3rem;
+    justify-content: center;
+    height: 2rem;
     background: var(--second-bg-color);
     align-items: center;
-    z-index: 100;
-    position: sticky;
-    top: 0;
+    z-index: 0;
+    width: 100%;
 }
 
-.navList {
+.footerList {
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
 }
 
-.navItem {
+.footerItem {
     list-style: none;
-    padding-left: 1.5rem;
-}
-
-.navItem+.navItem {
-    margin-left: 1rem;
+    padding: 0 1rem;
 }
 
 /*----links*/
@@ -36,6 +32,9 @@ nav {
     align-items: center;
     flex-wrap: nowrap;
     gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    font-size: 0.8rem;
 }
 
 .active-link {
@@ -48,9 +47,11 @@ nav {
     align-items: center;
     flex-wrap: nowrap;
     gap: 0.5rem;
+    text-decoration: none;
+    font-size: 0.8rem;
 }
 
-a:hover{
+a:hover {
     color: var(--primary-color);
     display: flex;
     flex-direction: row;

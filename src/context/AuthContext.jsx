@@ -1,12 +1,12 @@
-import {createContext, useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import { createContext, useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import isTokenValid from "../helpers/isTokenValid";
 import axios from "axios";
 
 export const AuthContext = createContext({});
 
-function AuthContextProvider({children}) {
+function AuthContextProvider({ children }) {
     const [auth, setAuth] = useState({
         isAuth: false,
         user: null,
@@ -16,13 +16,14 @@ function AuthContextProvider({children}) {
     const [username, setUsername] = useState("");
     const [token, setToken] = useState("");
     const navigate = useNavigate();
+    const isMounted = useRef(true);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        setToken(token);
+        const storedToken = localStorage.getItem('token');
+        setToken(storedToken);
 
-        if (token && isTokenValid(token)) {
-            void login(token)
+        if (storedToken && isTokenValid(storedToken)) {
+            fetchUserData(storedToken);
         } else {
             setAuth({
                 isAuth: false,
@@ -30,51 +31,87 @@ function AuthContextProvider({children}) {
                 status: 'done'
             });
         }
-    }, [])
 
-    useEffect(() => {
-        console.log("Auth state changed:", auth);
-    }, [auth]);
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
+
+    async function fetchUserData(jwtToken) {
+        try {
+            const decodedToken = jwtDecode(jwtToken);
+            if (isMounted.current) {
+                setAuth({
+                    ...auth,
+                    isAuth: true,
+                    user: {
+                        username: decodedToken.sub,
+                        id: decodedToken.userId,
+                        role: decodedToken.role,
+                    },
+                    status: 'done',
+                });
+                setUsername(decodedToken.sub);
+                toggleAuthorized(true);
+            }
+        } catch (error) {
+            if (isMounted.current) {
+                console.error('Fout bij het ophalen van gebruikersgegevens:', error);
+                setAuth({
+                    isAuth: false,
+                    user: null,
+                    status: 'done',
+                });
+                setUsername("");
+                toggleAuthorized(false);
+                setToken("");
+            }
+        }
+    }
 
     async function login(username, password) {
         try {
-            const response = await axios.post(`https://api.datavortex.nl/moviesearcher/users/authenticate`, {
-                username,
-                password,
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Api-Key': 'moviesearcher:QgUz498OFaHSAWqGjIvS'
+            const response = await axios.post(
+                `https://api.datavortex.nl/moviesearcher/users/authenticate`,
+                {
+                    username,
+                    password,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Api-Key': import.meta.env.X_API_KEY,
+                    },
                 }
-            });
-            const token = response.data.jwt;
-            setToken(token);
+            );
+            const newToken = response.data.jwt;
+            setToken(newToken);
+            localStorage.setItem('token', newToken);
 
-            localStorage.setItem('token', token);
+            fetchUserData(newToken);
+            navigate('/zoeken');
+        } catch (error) {
+            if (isMounted.current) {
+                console.error('Inlogfout:', error);
+                setAuth({
+                    isAuth: false,
+                    user: null,
+                    status: 'done',
+                });
+                setUsername("");
+                toggleAuthorized(false);
+                setToken("");
 
-            const decodedToken = jwtDecode(token);
-            console.log("decoded Token")
-                        console.log(decodedToken);
-            console.log("Before setAuth:", auth);
+                console.error("Inlogfout in AuthContext:", error);
+                throw error;
+            }
+        }
+    }
+
+    function logout() {
+        if (isMounted.current) {
             setAuth({
                 ...auth,
-                isAuth: true,
-                user: {
-                    username: decodedToken.sub,
-                    id: decodedToken.userId,
-                    role: decodedToken.role,
-                },
-                status: 'done',
-            });
-            setUsername(decodedToken.sub);
-            toggleAuthorized(true);
-            console.log("After setAuth:", auth);
-            console.log("Gebruiker is ingelogd");
-            navigate('/search');
-
-        } catch (error) {
-            console.log(error);
-            setAuth({
                 isAuth: false,
                 user: null,
                 status: 'done',
@@ -83,21 +120,7 @@ function AuthContextProvider({children}) {
             toggleAuthorized(false);
             setToken("");
         }
-        console.log(auth);
-    }
-
-    function logout() {
-        console.log("Gebruiker is uitgelogd");
-        setAuth({
-            ...auth,
-            isAuth: false,
-            user: null,
-            status: 'done'
-        });
-        setUsername("");
-        toggleAuthorized(false);
-        setToken("")
-        console.log(auth);
+        localStorage.removeItem('token');
         navigate('/');
     }
 
@@ -112,12 +135,9 @@ function AuthContextProvider({children}) {
 
     return (
         <AuthContext.Provider value={contextData}>
-            {auth.status === 'done'
-                ? children
-                : <p>Loading...</p>
-            }
+            {auth.status === 'done' ? children : <p>Laden...</p>}
         </AuthContext.Provider>
-    )
+    );
 }
 
 export default AuthContextProvider;

@@ -18,8 +18,8 @@ function App() {
         <>
            <Routes>
                <Route path="/" element={<Home/>} />
-               <Route path="/search" element={authorized ? <Searcher/> : <Navigate to="/" />} />
-               <Route path="/favorite" element={authorized ? <Favorites/> : <Navigate to="/" />} />
+               <Route path="/zoeken" element={authorized ? <Searcher/> : <Navigate to="/" />} />
+               <Route path="/favorieten" element={authorized ? <Favorites/> : <Navigate to="/" />} />
                <Route path="/account" element={authorized ? <Account/> : <Navigate to="/" />} />
                <Route path="/inloggen" element={<LogIn/>} />
                <Route path="/aanmelden" element={<SignIn/>} />

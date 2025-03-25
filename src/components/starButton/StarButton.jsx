@@ -8,15 +8,13 @@ function StarButton(props) {
     const [star, setStar] = useState(false);
 
     useEffect(() => {
-        console.log("Favorites:", favorites, "ShowId:", props.showId);
-        if(favorites.includes(props.showId)){
-            setStar(true);
-        }
+        setStar(favorites.includes(props.showId));
     }, [favorites, props.showId]);
 
     function handleClick(event) {
         event.stopPropagation();
         setFavoriteMovies(props.showId);
+        setStar(!star);
     }
 
     return (

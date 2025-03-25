@@ -1,39 +1,43 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import './Button.css';
-import {useNavigate} from "react-router-dom";
-import {GenreContext} from "../../context/GenreContext.jsx";
-import {AuthContext} from "../../context/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
+import { GenreContext } from "../../context/GenreContext.jsx";
+import { AuthContext } from "../../context/AuthContext.jsx";
 
 function Button(props) {
     let navigate = useNavigate();
-    const {genres}= useContext(GenreContext);
+    const { genres, selectedGenres } = useContext(GenreContext);
     const [isClicked, setIsClicked] = useState(false);
     const { logout } = useContext(AuthContext);
 
+    useEffect(() => {
+        if (props.className === "genreButton" && selectedGenres.includes(props.id)) {
+            setIsClicked(true);
+        } else {
+            setIsClicked(false);
+        }
+    }, [props.id, selectedGenres, props.className]);
 
     const handleClick = () => {
-        if(props.navigate){
+        if (props.navigate) {
             switch (props.className) {
-                case 'logInNavigation':
-                    console.log('Navigating to /inloggen');
-                    navigate('/inloggen');
+                case 'AnnuleerButton':
+                    navigate('/');
                     break;
                 case 'signInHome':
-                    console.log('Navigating to /aanmelden');
                     navigate('/aanmelden');
+                    break;
+                default:
                     break;
             }
         }
         if (props.className === "logOutNavigation") {
-            console.log('Log uit');
             logout();
         }
-        if(props.className === "genreButton") {
+        if (props.className === "genreButton") {
             genres(props.id);
             setIsClicked(!isClicked);
         }
-
-
     };
 
     return (
@@ -44,7 +48,7 @@ function Button(props) {
         >
             {props.name}
         </button>
-    )
+    );
 }
 
 export default Button;

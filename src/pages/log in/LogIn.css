@@ -17,3 +17,13 @@ form {
     padding: 0.25rem;
     margin: 0.25rem 0;
 }
+
+.link {
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.link:hover {
+    color: var(--accent-color);
+}

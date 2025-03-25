@@ -10,7 +10,6 @@ function MovieContextProvider({ children })
     {
         setIsMovie(prevIsMovie => {
             const newIsMovie = prevIsMovie === "movie" ? "series" : "movie" ;
-            console.log("movie/series: " + newIsMovie);
             return newIsMovie;
         });
     }

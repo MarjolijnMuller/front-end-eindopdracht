@@ -1,17 +1,17 @@
 function uniqueStreamingServices(services) {
     if (!services || !Array.isArray(services)) {
-        return []; // Handle cases where services is null or not an array
+        return [];
     }
 
-    const uniqueServiceNames = new Set(); // Use a Set to efficiently store unique values
+    const uniqueServiceNames = new Set();
 
     for (const service of services) {
-        if (service && service.service && service.service.name) {  //check of service wel bestaat
+        if (service && service.service && service.service.name) {
             uniqueServiceNames.add(service.service.name);
         }
     }
 
-    return Array.from(uniqueServiceNames); // Convert the Set back to an array
+    return Array.from(uniqueServiceNames);
 }
 
 export default uniqueStreamingServices;
