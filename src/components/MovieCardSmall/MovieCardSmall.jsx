@@ -8,7 +8,6 @@ function MovieCardSmall(props) {
     const {selectedServices} = useContext(ServiceContext);
     const movieServices = props.service;
 
-    // eslint-disable-next-line react/prop-types
     const selectedService = movieServices.find(serviceAvailability =>
         selectedServices.includes(serviceAvailability.service.id));
 

@@ -7,7 +7,6 @@ function Button(props) {
 
 
     const handleClick = () => {
-                    console.log('Navigating to /inloggen');
                     navigate('/inloggen');
     };
 

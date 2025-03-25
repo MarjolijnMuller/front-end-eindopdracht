@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import isTokenValid from "../helpers/isTokenValid";
@@ -16,6 +16,7 @@ function AuthContextProvider({ children }) {
     const [username, setUsername] = useState("");
     const [token, setToken] = useState("");
     const navigate = useNavigate();
+    const isMounted = useRef(true);
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
@@ -30,38 +31,41 @@ function AuthContextProvider({ children }) {
                 status: 'done'
             });
         }
-    }, []);
 
-    useEffect(() => {
-        console.log("Auth state changed:", auth);
-    }, [auth]);
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
 
     async function fetchUserData(jwtToken) {
         try {
             const decodedToken = jwtDecode(jwtToken);
-            console.log(jwtToken)
-            setAuth({
-                ...auth,
-                isAuth: true,
-                user: {
-                    username: decodedToken.sub,
-                    id: decodedToken.userId,
-                    role: decodedToken.role,
-                },
-                status: 'done',
-            });
-            setUsername(decodedToken.sub);
-            toggleAuthorized(true);
+            if (isMounted.current) {
+                setAuth({
+                    ...auth,
+                    isAuth: true,
+                    user: {
+                        username: decodedToken.sub,
+                        id: decodedToken.userId,
+                        role: decodedToken.role,
+                    },
+                    status: 'done',
+                });
+                setUsername(decodedToken.sub);
+                toggleAuthorized(true);
+            }
         } catch (error) {
-            console.error('Error fetching user data:', error);
-            setAuth({
-                isAuth: false,
-                user: null,
-                status: 'done',
-            });
-            setUsername("");
-            toggleAuthorized(false);
-            setToken("");
+            if (isMounted.current) {
+                console.error('Fout bij het ophalen van gebruikersgegevens:', error);
+                setAuth({
+                    isAuth: false,
+                    user: null,
+                    status: 'done',
+                });
+                setUsername("");
+                toggleAuthorized(false);
+                setToken("");
+            }
         }
     }
 
@@ -85,12 +89,29 @@ function AuthContextProvider({ children }) {
             localStorage.setItem('token', newToken);
 
             fetchUserData(newToken);
-            console.log("newToken")
-            console.log(newToken)
-            navigate('/search');
+            navigate('/zoeken');
         } catch (error) {
-            console.error('Login error:', error);
+            if (isMounted.current) {
+                console.error('Inlogfout:', error);
+                setAuth({
+                    isAuth: false,
+                    user: null,
+                    status: 'done',
+                });
+                setUsername("");
+                toggleAuthorized(false);
+                setToken("");
+
+                console.error("Inlogfout in AuthContext:", error);
+                throw error;
+            }
+        }
+    }
+
+    function logout() {
+        if (isMounted.current) {
             setAuth({
+                ...auth,
                 isAuth: false,
                 user: null,
                 status: 'done',
@@ -98,23 +119,7 @@ function AuthContextProvider({ children }) {
             setUsername("");
             toggleAuthorized(false);
             setToken("");
-
-            console.error("Login error in AuthContext:", error);
-            throw error;
         }
-    }
-
-    function logout() {
-        console.log("Gebruiker is uitgelogd");
-        setAuth({
-            ...auth,
-            isAuth: false,
-            user: null,
-            status: 'done',
-        });
-        setUsername("");
-        toggleAuthorized(false);
-        setToken("");
         localStorage.removeItem('token');
         navigate('/');
     }
@@ -130,7 +135,7 @@ function AuthContextProvider({ children }) {
 
     return (
         <AuthContext.Provider value={contextData}>
-            {auth.status === 'done' ? children : <p>Loading...</p>}
+            {auth.status === 'done' ? children : <p>Laden...</p>}
         </AuthContext.Provider>
     );
 }

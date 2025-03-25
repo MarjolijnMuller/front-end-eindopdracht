@@ -9,7 +9,6 @@ function ViewContextProvider({ children })
     function viewSwitch()
     {
         toggleViewTiles(!viewTiles)
-            console.log("view: " + viewTiles);
             return viewTiles;
         }
 

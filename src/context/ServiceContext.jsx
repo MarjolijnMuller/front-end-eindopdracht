@@ -12,7 +12,6 @@ function ServiceContextProvider({ children })
         } else {
             setSelectedServices([...selectedServices, service]);
         }
-        console.log(selectedServices);
     }
 
 

@@ -4,9 +4,10 @@ import OuterContainer from "../../components/OuterContainer/OuterContainer.jsx";
 import Navigation from "../../components/Navigation/Navigation.jsx";
 import InnerContainer from "../../components/InnerContainer/InnerContainer.jsx";
 import Button from "../../components/Button/Button.jsx";
-import React, { useState } from "react";
+import React, {useState, useRef, useEffect} from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import Footer from "../../components/Footer/Footer.jsx";
 
 function SignIn() {
     const [formState, setFormState] = useState({
@@ -21,10 +22,19 @@ function SignIn() {
     const [repeatPasswordError, setRepeatPasswordError] = useState("");
     const [formSubmitted, setFormSubmitted] = useState(false);
     const navigate = useNavigate();
+    const abortControllerRef = useRef(null);
+
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+        };
+    }, []);
 
     function validateUsername(username) {
         if (username.length < 4) {
-            return "Username must be at least 4 characters long.";
+            return "Gebruikersnaam moet minstens 4 tekens lang zijn.";
         }
         return "";
     }
@@ -32,21 +42,21 @@ function SignIn() {
     function validateEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            return "Invalid email address.";
+            return "Ongeldig e-mailadres.";
         }
         return "";
     }
 
     function validatePassword(password) {
         if (password.length < 8) {
-            return "Password must be at least 8 characters long.";
+            return "Wachtwoord moet minstens 8 tekens lang zijn.";
         }
         return "";
     }
 
     function validateRepeatPassword(password, repeatPassword) {
         if (password !== repeatPassword) {
-            return "Passwords do not match.";
+            return "Wachtwoorden komen niet overeen.";
         }
         return "";
     }
@@ -79,31 +89,41 @@ function SignIn() {
             return;
         }
 
+        const abortController = new AbortController();
+        abortControllerRef.current = abortController;
+        const signal = abortController.signal;
+
         try {
-            const response = await axios.post(
+            await axios.post(
                 "https://api.datavortex.nl/moviesearcher/users",
                 {
                     username: formState.username,
                     email: formState.email,
                     password: formState.password,
                     info: "",
-                    authorities: [{ authority: "USER" }],
+                    authorities: [{authority: "USER"}],
                 },
                 {
                     headers: {
                         "Content-Type": "application/json",
                         "X-Api-Key": import.meta.env.X_API_KEY,
                     },
+                    signal: signal,
                 }
             );
-            console.log(response);
             navigate("/inloggen");
+            abortControllerRef.current = null;
         } catch (error) {
-            console.error(error);
-            if (error.response && error.response.status === 403) {
-                setUsernameError("Username already exists.");
+            if (axios.isCancel(error)) {
+                console.error('Verzoek geannuleerd', error.message);
             } else {
-                setUsernameError("Something went wrong. Please try again.");
+                console.error(error);
+                if (error.response && error.response.status === 403) {
+                    setUsernameError("Gebruikersnaam bestaat al.");
+                } else {
+                    setUsernameError("Er is iets misgegaan. Probeer het opnieuw.");
+                }
+                abortControllerRef.current = null;
             }
         }
     }
@@ -125,64 +145,69 @@ function SignIn() {
 
     return (
         <>
-            <Navigation />
+            <body>
+            <Navigation/>
+            <main>
+                <TitleContainer title="Aanmelden"/>
 
-            <TitleContainer title="Sign Up" />
+                <OuterContainer>
+                    <InnerContainer classNameAdd="center">
+                        <form onSubmit={handleSubmit}>
+                            <label htmlFor="signIn-username" className="signIn">
+                                Username:
+                                <input
+                                    type="text"
+                                    name="username"
+                                    value={formState.username}
+                                    onChange={handleChange}
+                                    className="signInInput"
+                                />
+                                {formSubmitted && usernameError && <p className="error">{usernameError}</p>}
+                            </label>
 
-            <OuterContainer>
-                <InnerContainer classNameAdd="center">
-                    <form onSubmit={handleSubmit}>
-                        <label htmlFor="signIn-username" className="signIn">
-                            Username:
-                            <input
-                                type="text"
-                                name="username"
-                                value={formState.username}
-                                onChange={handleChange}
-                                className="signInInput"
-                            />
-                            {formSubmitted && usernameError && <p className="error">{usernameError}</p>}
-                        </label>
+                            <label htmlFor="signIn-mailadres" className="signIn">
+                                Email Address:
+                                <input
+                                    type="text"
+                                    name="email"
+                                    value={formState.email}
+                                    onChange={handleChange}
+                                    className="signInInput"
+                                />
+                                {formSubmitted && emailError && <p className="error">{emailError}</p>}
+                            </label>
 
-                        <label htmlFor="signIn-mailadres" className="signIn">
-                            Email Address:
-                            <input
-                                type="text"
-                                name="email"
-                                value={formState.email}
-                                onChange={handleChange}
-                                className="signInInput"
-                            />
-                            {formSubmitted && emailError && <p className="error">{emailError}</p>}
-                        </label>
-
-                        <label htmlFor="signIn-password" className="signIn">
-                            Password:
-                            <input
-                                type="password"
-                                name="password"
-                                value={formState.password}
-                                onChange={handleChange}
-                                className="signInInput"
-                            />
-                            {formSubmitted && passwordError && <p className="error">{passwordError}</p>}
-                            Repeat Password:
-                            <input
-                                type="password"
-                                name="repeatPassword"
-                                value={formState.repeatPassword}
-                                onChange={handleChange}
-                                className="signInInput"
-                            />
-                            {formSubmitted && repeatPasswordError && <p className="error">{repeatPasswordError}</p>}
-                        </label>
-                        <InnerContainer classNameAdd="center">
-                            <Button type={"submit"} name={"Sign Up"} className={"SubmitButton"} />
-                            <Button type={"button"} name={"Cancel"} className={"AnnuleerButton"} onClick={handleCancel} />
-                        </InnerContainer>
-                    </form>
-                </InnerContainer>
-            </OuterContainer>
+                            <label htmlFor="signIn-password" className="signIn">
+                                Password:
+                                <input
+                                    type="password"
+                                    name="password"
+                                    value={formState.password}
+                                    onChange={handleChange}
+                                    className="signInInput"
+                                />
+                                {formSubmitted && passwordError && <p className="error">{passwordError}</p>}
+                                Repeat Password:
+                                <input
+                                    type="password"
+                                    name="repeatPassword"
+                                    value={formState.repeatPassword}
+                                    onChange={handleChange}
+                                    className="signInInput"
+                                />
+                                {formSubmitted && repeatPasswordError && <p className="error">{repeatPasswordError}</p>}
+                            </label>
+                            <InnerContainer classNameAdd="center">
+                                <Button type={"submit"} name={"Sign Up"} className={"SubmitButton"}/>
+                                <Button type={"button"} name={"Cancel"} className={"AnnuleerButton"}
+                                        onClick={handleCancel}/>
+                            </InnerContainer>
+                        </form>
+                    </InnerContainer>
+                </OuterContainer>
+            </main>
+            <Footer/>
+            </body>
         </>
     );
 }
