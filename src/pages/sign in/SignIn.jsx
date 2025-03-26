@@ -33,8 +33,8 @@ function SignIn() {
     }, []);
 
     function validateUsername(username) {
-        if (username.length < 4) {
-            return "Gebruikersnaam moet minstens 4 tekens lang zijn.";
+        if (username.length < 6) {
+            return "Gebruikersnaam moet minstens 6 tekens lang zijn.";
         }
         return "";
     }
@@ -48,8 +48,8 @@ function SignIn() {
     }
 
     function validatePassword(password) {
-        if (password.length < 8) {
-            return "Wachtwoord moet minstens 8 tekens lang zijn.";
+        if (password.length < 6) {
+            return "Wachtwoord moet minstens 6 tekens lang zijn.";
         }
         return "";
     }
@@ -94,20 +94,18 @@ function SignIn() {
         const signal = abortController.signal;
 
         try {
-            await axios.post(
-                "https://api.datavortex.nl/moviesearcher/users",
+            const response = await axios.post(
+                "https://frontend-educational-backend.herokuapp.com/api/auth/signup",
                 {
                     username: formState.username,
                     email: formState.email,
                     password: formState.password,
-                    info: "",
-                    authorities: [{authority: "USER"}],
+                    role: ["user"],
                 },
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "X-Api-Key": import.meta.env.X_API_KEY,
-                    },
+                        },
                     signal: signal,
                 }
             );
@@ -117,11 +115,14 @@ function SignIn() {
             if (axios.isCancel(error)) {
                 console.error('Verzoek geannuleerd', error.message);
             } else {
-                console.error(error);
+                console.error("Registratiefout:", error);
                 if (error.response && error.response.status === 403) {
                     setUsernameError("Gebruikersnaam bestaat al.");
-                } else {
-                    setUsernameError("Er is iets misgegaan. Probeer het opnieuw.");
+                } else if (error.response && error.response.data && error.response.data.message) {
+                    setUsernameError(`Registratie mislukt: ${error.response.data.message}`);
+                }
+                else {
+                    setUsernameError("Er is iets misgegaan tijdens de registratie. Probeer het opnieuw.");
                 }
                 abortControllerRef.current = null;
             }

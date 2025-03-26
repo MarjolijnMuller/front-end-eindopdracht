@@ -1,5 +1,12 @@
 # MovieSearcher
 
+## Inhoudsopgave
+1. [Inleiding](#1-inleiding)
+2. [Benodigdheden](#2-benodigdheden)
+3. [Installatie-instructies](#3-installatie-instructies)
+4. [De applicatie draaien](#4-de-applicatie-draaien)
+5. [Beschikbare npm-commando's](#5-beschikbare-npm-commando's)
+
 ## 1. Inleiding
 
 De MovieSearcher is een webapplicatie waarmee gebruikers eenvoudig films en series kunnen vinden op verschillende streamingdiensten. Gebruikers kunnen filteren op genre, streamingdienst en zoekwoorden. De applicatie toont gedetailleerde informatie over elke film of serie, inclusief streamingdienst, cast en beschrijving.
@@ -23,8 +30,7 @@ Om de MovieSearcher te kunnen runnen, heb je de volgende software en gegevens no
     * Vul dit bestand met de volgende variabelen:
 
         ```
-        VITE_API_KEY=moviesearcher:QgUz498OFaHSAWqGjIvS
-        VITE_RAPIDAPI_KEY=5b9c13ca93msh7d7c427331406c1p13d79fjsne76971a64dcc
+        VITE_RAPIDAPI_KEY=8daba3a9eamshe3a66b1a2ba6d6dp1f5246jsn098c2af844e0
         ```
 
 * **Browser:** Een moderne webbrowser zoals Chrome, Firefox of Edge.
@@ -54,7 +60,11 @@ Volg deze stappen om de MovieSearcher te installeren en te starten:
 
 6.  **Open de applicatie in je browser:** De applicatie wordt geopend in je standaardbrowser op `http://localhost:5174`.
 
-## 4. Beschikbare npm-commando's
+## 4. De applicatie draaien
+
+Nadat de installatie is voltooid, kun je de applicatie starten door het commando `npm run dev` uit te voeren in de terminal. De applicatie is vervolgens te openen in je browser op `http://localhost:5174`.
+
+## 5. Beschikbare npm-commando's
 
 * `npm run dev`: Start de ontwikkelserver.
 * `npm run build`: Bouwt de applicatie voor productie (indien geconfigureerd).

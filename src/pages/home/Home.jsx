@@ -5,6 +5,7 @@ import Button from "../../components/Button/Button.jsx";
 import React from "react";
 
 function Home() {
+
     return (
         <>
             <Navigation disabled={true}/>

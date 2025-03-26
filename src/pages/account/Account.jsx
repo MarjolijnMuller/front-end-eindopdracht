@@ -9,11 +9,12 @@ import axios from "axios";
 import Footer from "../../components/Footer/Footer.jsx";
 
 function Account() {
-    const {username, token} = useContext(AuthContext);
+    const {token} = useContext(AuthContext);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const abortControllerRef = useRef(null);
+    const backendUrl = 'https://frontend-educational-backend.herokuapp.com';
 
     useEffect(() => {
         async function fetchUser() {
@@ -26,11 +27,10 @@ function Account() {
 
             try {
                 const response = await axios.get(
-                    `https://api.datavortex.nl/moviesearcher/users/${username}`,
+                    `${backendUrl}/api/user`,
                     {
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-Api-Key': import.meta.env.X_API_KEY,
                             'Authorization': `Bearer ${token}`,
                         },
                         signal: signal,
@@ -41,7 +41,7 @@ function Account() {
                 if (axios.isCancel(error)) {
                     console.error('Request geannuleerd', error.message);
                 } else {
-                    console.error(error);
+                    console.error("Fout bij het ophalen van accountgegevens:", error);
                     setError("Het laden van de accountgegevens is mislukt.");
                 }
             } finally {
@@ -57,7 +57,7 @@ function Account() {
                 abortControllerRef.current.abort();
             }
         };
-    }, [username, token]);
+    }, [token]);
 
     return (
         <>
@@ -74,6 +74,7 @@ function Account() {
                             <div className="userData">
                                 <p>Gebruikersnaam: <strong>{user.username}</strong></p>
                                 <p>EmailAdres: <strong>{user.email}</strong></p>
+                                {user.info && <p>Extra info: <strong>{user.info}</strong></p>}
                             </div>
                         )}
                     </InnerContainer>

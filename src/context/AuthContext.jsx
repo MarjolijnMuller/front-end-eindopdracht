@@ -17,6 +17,7 @@ function AuthContextProvider({ children }) {
     const [token, setToken] = useState("");
     const navigate = useNavigate();
     const isMounted = useRef(true);
+    const backendUrl = 'https://frontend-educational-backend.herokuapp.com';
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
@@ -42,12 +43,9 @@ function AuthContextProvider({ children }) {
             const decodedToken = jwtDecode(jwtToken);
             if (isMounted.current) {
                 setAuth({
-                    ...auth,
                     isAuth: true,
                     user: {
                         username: decodedToken.sub,
-                        id: decodedToken.userId,
-                        role: decodedToken.role,
                     },
                     status: 'done',
                 });
@@ -55,8 +53,8 @@ function AuthContextProvider({ children }) {
                 toggleAuthorized(true);
             }
         } catch (error) {
+            console.error('Error fetching user data:', error);
             if (isMounted.current) {
-                console.error('Fout bij het ophalen van gebruikersgegevens:', error);
                 setAuth({
                     isAuth: false,
                     user: null,
@@ -69,10 +67,11 @@ function AuthContextProvider({ children }) {
         }
     }
 
+
     async function login(username, password) {
         try {
             const response = await axios.post(
-                `https://api.datavortex.nl/moviesearcher/users/authenticate`,
+                `${backendUrl}/api/auth/signin`,
                 {
                     username,
                     password,
@@ -80,11 +79,10 @@ function AuthContextProvider({ children }) {
                 {
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Api-Key': import.meta.env.X_API_KEY,
-                    },
+                        },
                 }
             );
-            const newToken = response.data.jwt;
+            const newToken = response.data.accessToken;
             setToken(newToken);
             localStorage.setItem('token', newToken);
 
@@ -111,7 +109,6 @@ function AuthContextProvider({ children }) {
     function logout() {
         if (isMounted.current) {
             setAuth({
-                ...auth,
                 isAuth: false,
                 user: null,
                 status: 'done',
