@@ -61,7 +61,6 @@ function Account() {
 
     return (
         <>
-            <body>
             <Navigation/>
             <main>
                 <TitleContainer title="Mijn account"/>
@@ -81,7 +80,6 @@ function Account() {
                 </OuterContainer>
             </main>
             <Footer/>
-            </body>
         </>
     );
 }

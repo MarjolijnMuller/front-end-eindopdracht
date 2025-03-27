@@ -146,7 +146,6 @@ function SignIn() {
 
     return (
         <>
-            <body>
             <Navigation/>
             <main>
                 <TitleContainer title="Aanmelden"/>
@@ -208,7 +207,6 @@ function SignIn() {
                 </OuterContainer>
             </main>
             <Footer/>
-            </body>
         </>
     );
 }

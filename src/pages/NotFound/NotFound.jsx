@@ -7,7 +7,7 @@ import Navigation from "../../components/Navigation/Navigation.jsx";
 
 function NotFound() {
     return (
-        <body>
+        <>
         <Navigation/>
         <main>
             <OuterContainer>
@@ -16,7 +16,7 @@ function NotFound() {
             </OuterContainer>
         </main>
         <Footer/>
-        </body>
+        </>
     )
         ;
 }

@@ -2,15 +2,15 @@ import './LogIn.css';
 import TitleContainer from "../../components/TitleContainer/TitleContainer.jsx";
 import OuterContainer from "../../components/OuterContainer/OuterContainer.jsx";
 import Button from "../../components/Button/Button.jsx";
-import { useContext, useState, useRef, useEffect } from "react";
+import {useContext, useState, useRef, useEffect} from "react";
 import Navigation from "../../components/Navigation/Navigation.jsx";
 import InnerContainer from "../../components/InnerContainer/InnerContainer.jsx";
-import { AuthContext } from "../../context/AuthContext.jsx";
-import { useNavigate } from 'react-router-dom';
+import {AuthContext} from "../../context/AuthContext.jsx";
+import {useNavigate} from 'react-router-dom';
 import Footer from "../../components/Footer/Footer.jsx";
 
 function LogIn() {
-    const { login } = useContext(AuthContext);
+    const {login} = useContext(AuthContext);
     const [formState, setFormState] = useState({
         username: "",
         password: "",
@@ -68,41 +68,42 @@ function LogIn() {
     }
 
     return (
-        <body>
-        <Navigation />
-        <main>
-            <TitleContainer title="Inloggen" />
+        <>
+            <Navigation/>
+            <main>
+                <TitleContainer title="Inloggen"/>
 
-            <OuterContainer>
-                <InnerContainer classNameAdd="center">
-                    <form onSubmit={handleSubmit}>
-                        <label htmlFor="inlog-username" className="logIn">
-                            Gebruikersnaam:
-                            <input
-                                type="text"
-                                name="username"
-                                onChange={handleChange}
-                                className="logInInput"
-                            />
-                        </label>
-                        <label htmlFor="inlog-password" className="logIn">
-                            Wachtwoord:
-                            <input
-                                type="password"
-                                name="password"
-                                onChange={handleChange}
-                                className="logInInput"
-                            />
-                        </label>
-                        <Button type={"submit"} name={"Inloggen"} className={"SubmitButton"} />
-                        {errorMessage && <p className="error">{errorMessage}</p>}
-                    </form>
-                </InnerContainer>
-            </OuterContainer>
-        </main>
-        <Footer/>
-        </body>
-    );
+                <OuterContainer>
+                    <InnerContainer classNameAdd="center">
+                        <form onSubmit={handleSubmit}>
+                            <label htmlFor="inlog-username" className="logIn">
+                                Gebruikersnaam:
+                                <input
+                                    type="text"
+                                    name="username"
+                                    onChange={handleChange}
+                                    className="logInInput"
+                                />
+                            </label>
+                            <label htmlFor="inlog-password" className="logIn">
+                                Wachtwoord:
+                                <input
+                                    type="password"
+                                    name="password"
+                                    onChange={handleChange}
+                                    className="logInInput"
+                                />
+                            </label>
+                            <Button type={"submit"} name={"Inloggen"} className={"SubmitButton"}/>
+                            {errorMessage && <p className="error">{errorMessage}</p>}
+                        </form>
+                    </InnerContainer>
+                </OuterContainer>
+            </main>
+            <Footer/>
+        </>
+    )
+        ;
 }
 
 export default LogIn;

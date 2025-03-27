@@ -82,7 +82,6 @@ function Favorites() {
 
     return (
         <>
-            <body>
             <Navigation />
             <main>
                 <TitleContainer title="Mijn favorieten" />
@@ -131,7 +130,6 @@ function Favorites() {
                 </OuterContainer>
             </main>
             <Footer />
-            </body>
         </>
     );
 }

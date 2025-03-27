@@ -58,7 +58,6 @@ function Filmpage() {
 
     return (
         <>
-            <body>
             <Navigation />
             <main>
             {loading && <p>Laden...</p>}
@@ -109,7 +108,6 @@ function Filmpage() {
             )}
             </main>
             <Footer/>
-            </body>
         </>
     );
 
